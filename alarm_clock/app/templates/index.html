@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="clock"></div>
+{% endblock %}
+
+
+{% block javascript %}
+        // http://flipclockjs.com/api
+        var clock;
+        $(document).ready(function() {
+				clock = $('.clock').FlipClock({
+					clockFace: 'TwelveHourClock',
+					showSeconds: false
+				});
+			});
+
+{% endblock %}

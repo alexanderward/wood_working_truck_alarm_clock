@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-us">
+{% load staticfiles %}
+	<head>
+		<meta charset="utf-8">
+        <title>Alarm Clock</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<!-- #CSS Links -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/base.css' %}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/bootstrap.min.css' %}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/vendor/flipclock.css' %}">
+        {% block css %}{% endblock %}
+	</head>
+
+	<body>
+    {% block body %}{% endblock %}
+    </body>
+    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/vendor/flipclock.min.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script>
+        {% block javascript %}{% endblock %}
+    </script>
+</html>
