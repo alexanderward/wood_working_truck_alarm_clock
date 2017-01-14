@@ -2,15 +2,20 @@ import signal
 
 import datetime
 import time
+from Queue import Queue
+
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import logging
 import sys
+from commands import Commands
 
 sys.path.append('..')
+from pubsub.broker import Broker
 from alarm_clock.settings import SSE_PORT
 from tornado.options import define, options, parse_command_line
+import threading
 
 define("port", default=SSE_PORT, help="run on the given port", type=int)
 
@@ -38,48 +43,87 @@ def get_timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
 
-class Main(tornado.web.RequestHandler):
-    def data_received(self, chunk):
-        pass
+class PubSub(threading.Thread):
+    def __init__(self, channel, host=None, port=None):
+        threading.Thread.__init__(self)
+        self.lock = threading.Lock()
+        self.broker = Broker()
+        self.broker.subscribe(channel)
+        self.output = Queue()
 
-    @tornado.web.asynchronous
-    def get(self, **kwargs):
-        if "Id" in kwargs.keys():
-            print "Your client id is: %s" % (kwargs["Id"],)
-        self.write("This is your response")
-        self.finish()
+    def run(self):
+        for source, channel, message in self.broker.listen():
+            with self.lock:
+                self.output.put((source, channel, message))
+
+    def stop(self):
+        self._Thread__stop()
 
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    def data_received(self, chunk):
-        pass
+class PubSubMixin(object):
+    def GetChannel(self, channel, host=None, port=None):
+        if channel not in self.application.channels:
+            self.application.channels[channel] = PubSub(channel, host, port)
+            self.application.channels[channel].start()
+        return self.application.channels[channel]
 
+
+class ClientPubSub(threading.Thread):
+    def __init__(self, master):
+        super(ClientPubSub, self).__init__()
+        self.master = master
+        self.running = True
+
+    def run(self):
+        while self.running:
+            try:
+                self.master.send_message(*self.master.channel_feed.output.get())
+            except tornado.websocket.WebSocketClosedError:
+                self.stop()
+
+    def stop(self):
+        self.running = False
+        self._Thread__stop()
+
+
+class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
     def open(self, *args, **kwargs):
-        self.id = kwargs["Id"]
+        self.channel = kwargs["channel"]
         self.stream.set_nodelay(True)
-        clients[self.id] = {"id": self.id, "object": self}
+        clients[self.channel] = {"id": self.channel, "object": self}
+        self.channel_feed = self.GetChannel(self.channel)
+        self.client_pub_sub = ClientPubSub(self).start()
 
     def on_message(self, message):
-        print "Client %s received a message: %s" % (self.id, message)
-        self.write_message("[%s] - Client id: %s" % (get_timestamp(), self.id,))
+        print "Client %s received a message: %s" % (self.channel, message)
+        self.write_message("[%s] - Client id: %s" % (get_timestamp(), self.channel,))
 
     def on_close(self):
-        self.write_message("[%s] - Closing for session Client id: %s" % (get_timestamp(), self.id,))
-        if self.id in clients:
-            del clients[self.id]
+        if self.channel in clients:
+            del clients[self.channel]
+        try:
+            self.write_message("[%s] - Closing for session Client id: %s" % (get_timestamp(), self.channel,))
+        except tornado.websocket.WebSocketClosedError:
+            pass
+
+    def send_message(self, source, channel, message):
+        self.write_message("%s -> %s: %s" % (source, channel, message))
 
     def check_origin(self, origin):
         return True
 
 
 app = tornado.web.Application([
-    (r'/', Main),
-    (r'/ws/(?P<Id>\w*)', WebSocketHandler),
+    (r'/ws/(?P<channel>\w*)', WebSocketHandler),
 ])
+app.channels = {}
 
 if __name__ == '__main__':
     parse_command_line()
     signal.signal(signal.SIGINT, signal_handler)
     app.listen(options.port)
     tornado.ioloop.PeriodicCallback(try_exit, 100).start()
-    tornado.ioloop.IOLoop.instance().start()
+    try:
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        pass
