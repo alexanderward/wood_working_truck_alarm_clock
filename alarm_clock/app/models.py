@@ -1,6 +1,10 @@
 from __future__ import unicode_literals
-
+from alarm_clock.settings import PUBSUB_SSE_CHANNEL
 from django.db import models
+from pubsub.broker import Broker
+from sse.commands import Commands
+
+broker = Broker()
 
 
 class Alarm(models.Model):
@@ -14,3 +18,9 @@ class Alarm(models.Model):
     thursday = models.BooleanField(default=False)
     friday = models.BooleanField(default=False)
     saturday = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        message = Commands.alarm_created(self)
+        message['alarm']['time'] = message['alarm']['time'].strftime("%H:%M:%S")
+        broker.publish(source='app.models.py', channel=PUBSUB_SSE_CHANNEL, message=message)
+        super(Alarm, self).save(*args, **kwargs)

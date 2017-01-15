@@ -16,7 +16,6 @@ except AppRegistryNotReady:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alarm_clock.settings")
     django.setup()
 
-from app.models import Alarm
 
 
 def get_timestamp():
@@ -25,30 +24,33 @@ def get_timestamp():
 
 class Commands(object):
     @staticmethod
-    def start_alarm(alarm_name):
+    def __get_alarm(alarm_name):
+        from app.models import Alarm
         alarm = None
         if isinstance(alarm_name, str):
             alarm = Alarm.objects.filter(name=alarm_name).first()
         elif isinstance(alarm_name, Alarm):
             alarm = alarm_name
+        return alarm
+
+    @staticmethod
+    def start_alarm(alarm_name):
+        alarm = Commands.__get_alarm(alarm_name)
         if alarm:
             return {'event': 'startAlarm',
                     'alarm': model_to_dict(alarm, fields=['video_url', 'name'])}
 
     @staticmethod
     def stop_alarm(alarm_name):
-        alarm = None
-        if isinstance(alarm_name, str):
-            alarm = Alarm.objects.filter(name=alarm_name).first()
-        elif isinstance(alarm_name, Alarm):
-            alarm = alarm_name
+        alarm = Commands.__get_alarm(alarm_name)
         if alarm:
             return {'event': 'stopAlarm',
-                    'alarm': model_to_dict(alarm, fields=[field.name for field in alarm._meta.fields])}
+                    'alarm': model_to_dict(alarm, fields=['video_url', 'name'])}
 
     @staticmethod
-    def alarm_created():
-        return {'event': 'alarmCreated'}
+    def alarm_created(alarm_name):
+        alarm = Commands.__get_alarm(alarm_name)
+        return {'event': 'alarmCreated', 'alarm': model_to_dict(alarm, fields=[field.name for field in alarm._meta.fields])}
 
     @staticmethod
     def user_connected():

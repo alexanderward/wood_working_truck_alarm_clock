@@ -1,11 +1,13 @@
 var UI = {
     showAlarm: function () {
-        $('#clock').hide();
-        $('#alarm-video').show();
+        $('#clock').fadeOut(function(){
+           $('#alarm-video').fadeIn();
+        });
     },
     hideAlarm: function(){
-        $('#alarm-video').hide();
-        $('#clock').show();
+        $('#alarm-video').fadeOut(function(){
+            $('#clock').fadeIn();
+        });
     }
 };
 

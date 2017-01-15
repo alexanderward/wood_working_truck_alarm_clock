@@ -52,11 +52,10 @@ class PubSub(threading.Thread):
 
     def run(self):
         for source, channel, message in self.broker.listen():
-            print '=' * 100, '\n', self._Thread__ident, self._stopevent.isSet(), '\n', '=' * 100
             with self.lock:
                 if self._stopevent.isSet():
                     break
-                self.output.put((source, channel, message))
+                self.output.put((self._Thread__ident, source, channel, message))
 
     def stop(self):
         self._stopevent.set()
@@ -65,7 +64,6 @@ class PubSub(threading.Thread):
 
 class PubSubMixin(object):
     def GetChannel(self, channel, host=None, port=None, user_id=None):
-        print self.application.channels
         if channel not in self.application.channels:
             self.application.channels[channel] = {user_id: PubSub(channel, host, port)}
         elif user_id not in self.application.channels[channel]:
@@ -91,10 +89,8 @@ class ClientPubSub(threading.Thread):
                 self.master.send_message(*self.master.channel_feed.output.get())
             except tornado.websocket.WebSocketClosedError:
                 self.stop()
-        raise Exception('wtf')
 
     def stop(self):
-        print 'ClientPubSub - Stopping thread: %s' % threading.currentThread()
         self._stopevent.set()
         self._Thread__stop()
 
@@ -122,15 +118,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
         print 'WebSocketHandler - Closing Session for: %s - %s' % (self.channel, self.user_id)
         self.client_pub_sub.stop()
         if self.channel in clients:
-            self.channel_feed.stop()
             clients[self.channel].remove(self.user_id)
         try:
             self.write_message(Commands.user_disconnected())
         except tornado.websocket.WebSocketClosedError:
             pass
 
-    def send_message(self, source, channel, message):
-        print "WebSocketHandler - Sending message for %s: %s -> %s: %s" % (self.user_id, source, channel, message)
+    def send_message(self, thread_id, source, channel, message):
+        print "WebSocketHandler(%s) - Sending message for %s: %s -> %s: %s" % (thread_id, self.user_id, source, channel, message)
         self.write_message(message)
 
     def check_origin(self, origin):

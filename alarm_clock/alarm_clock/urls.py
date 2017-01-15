@@ -16,8 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
-
+import sys
+sys.path.append('..')
+from app.views import AlarmViewSet
 router = routers.DefaultRouter()
+router.register(r'alarms', AlarmViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
