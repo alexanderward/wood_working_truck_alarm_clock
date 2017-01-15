@@ -5,7 +5,7 @@ from django.db import models
 
 class Alarm(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    video_url = models.URLField(null=True, blank=True)
+    video_url = models.CharField(max_length=255, null=True, blank=True)
     time = models.TimeField()
     sunday = models.BooleanField(default=False)
     monday = models.BooleanField(default=False)

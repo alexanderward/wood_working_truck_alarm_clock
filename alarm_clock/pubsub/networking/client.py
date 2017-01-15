@@ -2,8 +2,9 @@ import socket
 import sys
 import logging
 from communication import send, receive
-from constants import SERVER_PORT
+from constants import SERVER_PORT, RECONNECT_TIME
 import threading
+import time
 
 
 def try_connect(function):
@@ -11,8 +12,12 @@ def try_connect(function):
         try:
             function(self, *args, **kwargs)
         except socket.error, e:
-            self.logger.error('Could not connect to chat server')
-            sys.exit(1)
+            self.logger.error('Could not connect to server')
+            time.sleep(RECONNECT_TIME)
+            self.logger.error('Reconnecting to server')
+            self.setup_socket()
+            function(self, *args, **kwargs)
+            # sys.exit(1)
 
     return try_fn
 
@@ -56,4 +61,4 @@ class Client(object):
             if self.callbackFn:
                 self.callbackFn(data)
             else:
-                self.logger.info('Recieved: %s' % data)
+                self.logger.info('Received: %s' % data)

@@ -1,4 +1,38 @@
-/*html, body{*/
-    /*width:100%;*/
-    /*height:100%;*/
-/*}*/
+iframe {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    background-size: cover;
+}
+
+#clocktext {
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+body{
+    display:table;
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+#clock{
+    display:table-cell;
+    width:100%;
+    height:100%;
+    text-align:center;
+    vertical-align:middle;
+}
+#clocktext{
+    font-size:24pt;
+    font-kerning:none;
+    color:red;
+}

@@ -39,10 +39,6 @@ def try_exit():
         logging.info('exit success')
 
 
-def get_timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-
-
 class PubSub(threading.Thread):
     def __init__(self, channel, host=None, port=None):
         threading.Thread.__init__(self)
@@ -95,19 +91,19 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
         self.client_pub_sub = ClientPubSub(self).start()
 
     def on_message(self, message):
-        print "Client %s received a message: %s" % (self.channel, message)
-        self.write_message("[%s] - Client id: %s" % (get_timestamp(), self.channel,))
+        self.write_message(Commands.user_connected())
 
     def on_close(self):
         if self.channel in clients:
             del clients[self.channel]
         try:
-            self.write_message("[%s] - Closing for session Client id: %s" % (get_timestamp(), self.channel,))
+            self.write_message(Commands.user_disconnected())
         except tornado.websocket.WebSocketClosedError:
             pass
 
     def send_message(self, source, channel, message):
-        self.write_message("%s -> %s: %s" % (source, channel, message))
+        # self.write_message("%s -> %s: %s" % (source, channel, message))
+        self.write_message(message)
 
     def check_origin(self, origin):
         return True
