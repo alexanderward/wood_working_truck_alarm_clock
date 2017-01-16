@@ -6,6 +6,9 @@ from constants import SERVER_PORT, RECONNECT_TIME
 import threading
 import time
 
+current_tries = 0
+total_tries = 10
+
 
 def try_connect(function):
     def try_fn(self, *args, **kwargs):
@@ -14,10 +17,14 @@ def try_connect(function):
         except socket.error, e:
             self.logger.error('Could not connect to server')
             time.sleep(RECONNECT_TIME)
-            self.logger.error('Reconnecting to server')
-            self.setup_socket()
-            function(self, *args, **kwargs)
-            # sys.exit(1)
+            global current_tries
+            global total_tries
+            if current_tries < total_tries:
+                current_tries += 1
+                self.logger.error('Reconnecting to server')
+                self.setup_socket()
+                function(self, *args, **kwargs)
+                # sys.exit(1)
 
     return try_fn
 

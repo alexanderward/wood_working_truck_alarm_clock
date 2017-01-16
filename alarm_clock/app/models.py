@@ -18,9 +18,13 @@ class Alarm(models.Model):
     thursday = models.BooleanField(default=False)
     friday = models.BooleanField(default=False)
     saturday = models.BooleanField(default=False)
+    enabled = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         message = Commands.alarm_created(self)
         message['alarm']['time'] = message['alarm']['time'].strftime("%H:%M:%S")
         broker.publish(source='app.models.py', channel=PUBSUB_SSE_CHANNEL, message=message)
         super(Alarm, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name

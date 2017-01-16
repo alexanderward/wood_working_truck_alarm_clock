@@ -14,13 +14,14 @@ var UI = {
 
 var actions = {
     startAlarm: function(obj) {
-        console.log('startAlarm:');
+        console.log('startAlarm:' + obj.video_url);
         UI.showAlarm();
         player.loadVideoByUrl(obj.video_url);
     },
     stopAlarm: function(obj) {
-        console.log('stopAlarm: ' + obj);
+        console.log('stopAlarm: ' + obj.video_url);
         UI.hideAlarm();
+        player.stopVideo();
     },
     alarmCreated: function(obj) {
         console.log('alarmCreated: ' + obj);

@@ -1,8 +1,6 @@
 import uuid
 import signal
 
-import datetime
-import time
 from Queue import Queue
 
 import tornado.ioloop
@@ -10,7 +8,6 @@ import tornado.web
 import tornado.websocket
 import logging
 import sys
-from commands import Commands
 
 sys.path.append('..')
 from pubsub.broker import Broker
@@ -60,6 +57,9 @@ class PubSub(threading.Thread):
     def stop(self):
         self._stopevent.set()
         self._Thread__stop()
+
+    def publish(self, source, channel, message):
+        self.broker.publish(source, channel, message)
 
 
 class PubSubMixin(object):
@@ -112,9 +112,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
         print 'WebSocketHandler - Starting Session with user: %s' % self.user_id
 
     def on_message(self, message):
+        from commands import Commands
         self.write_message(Commands.user_connected())
 
     def on_close(self):
+        from commands import Commands
         print 'WebSocketHandler - Closing Session for: %s - %s' % (self.channel, self.user_id)
         self.client_pub_sub.stop()
         if self.channel in clients:
@@ -125,7 +127,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
             pass
 
     def send_message(self, thread_id, source, channel, message):
-        print "WebSocketHandler(%s) - Sending message for %s: %s -> %s: %s" % (thread_id, self.user_id, source, channel, message)
+        print "WebSocketHandler(%s) - Sending message for %s: %s -> %s: %s" % (
+        thread_id, self.user_id, source, channel, message)
         self.write_message(message)
 
     def check_origin(self, origin):
