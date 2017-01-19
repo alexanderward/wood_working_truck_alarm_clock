@@ -32,6 +32,7 @@ class PubSubMonitor(threading.Thread):
     def run(self):
         while not self._stopevent.isSet():
             thread_id, source, channel, message = self.master.pubsub.output.get()
+            print thread_id, source, channel, message
             if channel == self.channel and message.get('event', None) == 'alarmCreated':
                 self.master.alarms = self.master.convert_queryset_to_day_dict(Alarm.objects.all())
 

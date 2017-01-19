@@ -11,12 +11,35 @@ $(document).ready(function() {
     textElem.appendChild(textNode);
     var curFontSize = 24;  // Do not change
 
+    // function calculate_am_pm(date){
+    //     date
+    //     return time;
+    // }
+    function formatDate(date) {
+        var hh = date.getHours();
+        var m = date.getMinutes();
+        // var s = date.getSeconds();
+        var dd = "AM";
+        var h = hh;
+        if (h >= 12) {
+            h = hh-12;
+            dd = "PM";
+        }
+        if (h == 0) {
+            h = 12;
+        }
+        m = m<10?"0"+m:m;
+
+        // s = s<10?"0"+s:s;
+
+        /* if you want 2 digit hours: */
+        h = h<10?"0"+h:h;
+    return h+":"+m+" "+dd
+}
+
     function updateClock() {
         var d = new Date();
-        var s = "";
-        s += (10 > d.getHours() ? "0" : "") + d.getHours() + ":";
-        s += (10 > d.getMinutes() ? "0" : "") + d.getMinutes();
-        textNode.data = s;
+        textNode.data = formatDate(d);
         setTimeout(updateClock, 60000 - d.getTime() % 60000 + 100);
     }
 

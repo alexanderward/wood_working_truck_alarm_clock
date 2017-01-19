@@ -15,12 +15,13 @@ def index(request):
     return render(request, 'index.html', context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_CHANNEL})
 
 
-def test_alarm(request, alarm_id):
+def test_alarm(request, alarm_id=None):
     alarm = Alarm.objects.filter(pk=alarm_id).first()
     obj = {}
-    if not alarm:
+    error_msg = None
+    if not alarm and alarm is not None:
         obj = {'error': 'Not a valid id for any alarm!'}
-    if request.method == 'GET':
+    elif request.method == 'GET':
         obj = model_to_dict(alarm)
     elif request.method == 'POST':
         event = request.POST.get('event')
@@ -29,18 +30,22 @@ def test_alarm(request, alarm_id):
                 status = 'success'
                 message = Commands.start_alarm(alarm)
                 broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_CHANNEL, message=message)
-            except:
+            except Exception as e:
                 status = 'failed'
+                error_msg = str(e)
         elif event == 'stop':
             try:
                 status = 'success'
                 message = Commands.stop_alarm(alarm)
                 broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_CHANNEL, message=message)
-            except:
+            except Exception as e:
                 status = 'failed'
+                error_msg = str(e)
         else:
             status = 'unknown event'
-        obj = {'event': event, 'status': status, 'alarm': model_to_dict(alarm)}
+        obj = {'event': event, 'status': status, 'alarm': 'Broadcast Stop' if not alarm else model_to_dict(alarm)}
+        if error_msg:
+            obj.update({'error_msg': error_msg})
 
     return JsonResponse(obj, safe=False)
 

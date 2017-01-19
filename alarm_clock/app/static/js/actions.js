@@ -19,7 +19,7 @@ var actions = {
         player.loadVideoByUrl(obj.video_url);
     },
     stopAlarm: function(obj) {
-        console.log('stopAlarm: ' + obj.video_url);
+        console.log('stopAlarm');
         UI.hideAlarm();
         player.stopVideo();
     },

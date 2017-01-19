@@ -41,11 +41,15 @@ class Commands(object):
                     'alarm': model_to_dict(alarm, fields=['video_url', 'name'])}
 
     @staticmethod
-    def stop_alarm(alarm_name):
-        alarm = Commands.__get_alarm(alarm_name)
+    def stop_alarm(alarm_name=None):
+        if alarm_name is None:
+            alarm = 'Broadcast Stop'
+        else:
+            alarm = model_to_dict(Commands.__get_alarm(alarm_name), fields=['video_url', 'name'])
+
         if alarm:
             return {'event': 'stopAlarm',
-                    'alarm': model_to_dict(alarm, fields=['video_url', 'name'])}
+                    'alarm': alarm}
 
     @staticmethod
     def alarm_created(alarm_name):

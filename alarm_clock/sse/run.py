@@ -55,6 +55,7 @@ class PubSub(threading.Thread):
                 self.output.put((self._Thread__ident, source, channel, message))
 
     def stop(self):
+        self.broker.stop()
         self._stopevent.set()
         self._Thread__stop()
 
@@ -119,6 +120,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
         from commands import Commands
         print 'WebSocketHandler - Closing Session for: %s - %s' % (self.channel, self.user_id)
         self.client_pub_sub.stop()
+        self.channel_feed.stop()
         if self.channel in clients:
             clients[self.channel].remove(self.user_id)
         try:

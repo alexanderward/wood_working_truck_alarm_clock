@@ -5,18 +5,21 @@ import collections
 
 from pubsub.networking.constants import ErrorCodes
 from pubsub.networking.client import Client
-
+import logging
 
 class Broker(object):
     __channels = list()
     __queue = Queue.Queue()
     client = None
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger('Broker')
 
     def __init__(self):
+        self.__continue = True
         self.setup_client()
 
     def setup_client(self):
-        self.client = Client()
+        self.client = Client(master=self)
         self.client.callbackFn = self.format_response
 
     @property
@@ -32,6 +35,13 @@ class Broker(object):
     def unsubscribe(self, channel):
         if channel in self.__channels:
             self.__channels.remove(channel)
+
+    def stop(self):
+        my_ip, my_port = self.client.sock.getsockname()
+        peer_ip, peer_port = self.client.sock.getpeername()
+        self.logger.info('Broker -> Stop: %s:%s - %s: %s' % (my_ip, my_port, peer_ip, peer_port))
+        self.__continue = False
+        self.client.exit()
 
     def publish(self, source, channel, message):
         if not isinstance(channel, basestring) or not isinstance(source, basestring):
@@ -51,15 +61,16 @@ class Broker(object):
             return data
 
     def format_response(self, response):
-        response = json.loads(response)
-        channel = response['channel']
-        source = response['source']
-        msg = self.normalize_json(response['msg'])
-        self.__queue.put((source, channel, msg))
+        if response:
+            response = json.loads(response)
+            channel = response['channel']
+            source = response['source']
+            msg = self.normalize_json(response['msg'])
+            self.__queue.put((source, channel, msg))
 
     def listen(self):
         self.client.start_receive()
-        while 1:
+        while self.__continue:
             while not self.__queue.empty():
                 source, channel, msg = self.__queue.get()
                 if channel in self.channels:
