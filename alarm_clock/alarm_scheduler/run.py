@@ -75,7 +75,7 @@ class Scheduler(object):
                         self.pubsub.publish(source='alarm_scheduler.run', channel=self.channel,
                                             message=Commands.start_alarm(alarm))
                         executing_this_alarm_this_minute = now_tuple
-                        print '[%s] %s - %s' % (now, alarm.name, alarm.video_url)
+                        print '[%s] %s - %s' % (now, alarm.name, alarm.video.url)
                         break
             time.sleep(1)
 

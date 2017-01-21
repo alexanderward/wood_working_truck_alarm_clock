@@ -46,7 +46,6 @@ class Broker(object):
     def publish(self, source, channel, message):
         if not isinstance(channel, basestring) or not isinstance(source, basestring):
             raise ValueError(ErrorCodes.InvalidChannelType.value)
-
         message = json.dumps({'msg': message, 'channel': channel, 'source': source})
         self.client.send(message)
 

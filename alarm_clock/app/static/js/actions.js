@@ -14,9 +14,9 @@ var UI = {
 
 var actions = {
     startAlarm: function(obj) {
-        console.log('startAlarm:' + obj.video_url);
+        console.log('startAlarm:' + obj.video.url);
         UI.showAlarm();
-        player.loadVideoByUrl(obj.video_url);
+        player.loadVideoByUrl(obj.video.url);
     },
     stopAlarm: function(obj) {
         console.log('stopAlarm');

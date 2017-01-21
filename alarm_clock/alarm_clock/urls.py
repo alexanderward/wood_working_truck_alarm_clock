@@ -18,9 +18,13 @@ from django.contrib import admin
 from rest_framework import routers
 import sys
 sys.path.append('..')
-from app.views import AlarmViewSet
+from app.views import AlarmViewSet, VideoViewSet
+
 router = routers.DefaultRouter()
-router.register(r'alarms', AlarmViewSet)
+router.register(r'alarms', AlarmViewSet, base_name='Alarm')
+router.register(r'alarms/(?P<id>\d+)/?$', AlarmViewSet, base_name='Alarm')
+router.register(r'videos', VideoViewSet, base_name='Video')
+router.register(r'videos/(?P<id>\d+)/?$', VideoViewSet, base_name='Video')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

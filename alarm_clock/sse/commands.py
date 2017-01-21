@@ -16,8 +16,6 @@ except AppRegistryNotReady:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alarm_clock.settings")
     django.setup()
 
-
-
 def get_timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -35,26 +33,30 @@ class Commands(object):
 
     @staticmethod
     def start_alarm(alarm_name):
+        from app.serializers import AlarmSerializer
         alarm = Commands.__get_alarm(alarm_name)
         if alarm:
             return {'event': 'startAlarm',
-                    'alarm': model_to_dict(alarm, fields=['video_url', 'name'])}
+                    'alarm': AlarmSerializer(alarm).data}
 
     @staticmethod
     def stop_alarm(alarm_name=None):
+        from app.serializers import AlarmSerializer
         if alarm_name is None:
             alarm = 'Broadcast Stop'
         else:
-            alarm = model_to_dict(Commands.__get_alarm(alarm_name), fields=['video_url', 'name'])
-
+            alarm = Commands.__get_alarm(alarm_name)
+            alarm = AlarmSerializer(alarm).data
         if alarm:
             return {'event': 'stopAlarm',
                     'alarm': alarm}
 
     @staticmethod
     def alarm_created(alarm_name):
+        from app.serializers import AlarmSerializer
         alarm = Commands.__get_alarm(alarm_name)
-        return {'event': 'alarmCreated', 'alarm': model_to_dict(alarm, fields=[field.name for field in alarm._meta.fields])}
+        return {'event': 'alarmCreated',
+                'alarm': AlarmSerializer(alarm).data}
 
     @staticmethod
     def user_connected():

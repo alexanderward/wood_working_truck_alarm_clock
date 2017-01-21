@@ -2,13 +2,68 @@ from alarm_clock.settings import SSE_PORT, PUBSUB_SSE_CHANNEL
 from django.http import JsonResponse
 from django.shortcuts import render
 from pubsub.broker import Broker
-from rest_framework import viewsets
-from models import Alarm
-from serializers import AlarmSerializer
+from rest_framework import status, viewsets
+from models import Alarm, Video
+from serializers import AlarmSerializer, VideoSerializer
 from django.forms.models import model_to_dict
 from sse.commands import Commands
+from django.http import HttpResponse
+from rest_framework.renderers import JSONRenderer
 
 broker = Broker()
+
+
+class GenericViewSet(viewsets.ModelViewSet):
+    def list(self, request, **kwargs):
+        queryset = self.queryset
+        serializer = self.serializer(self.paginate_queryset(queryset), many=True)
+        return JSONResponse(serializer.data)
+
+    def create(self, request, **kwargs):
+        serializer = self.serializer(data=request.data)
+        if serializer.is_valid():
+            instance = serializer.create(serializer.data)
+            response_serializer = self.serializer(instance)
+            return JSONResponse(response_serializer.data)
+        else:
+            return JSONResponse(serializer.errors)
+
+    def retrieve(self, request, pk=None, **kwargs):
+        instance = self.get_object()
+        if instance:
+            serializer = self.serializer(instance)
+            return JSONResponse(serializer.data)
+        else:
+            return JSONResponse(None)
+
+    def update(self, request, pk=None, **kwargs):
+        instance = self.get_object()
+        if instance:
+            serializer = self.serializer(data=request.data)
+            if serializer.is_valid():
+                instance = serializer.update(instance, serializer.data)
+                serializer = self.serializer(instance)
+                return JSONResponse(serializer.data)
+            else:
+                return JSONResponse(serializer.errors)
+
+    def destroy(self, request, pk=None, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return JSONResponse({'status': 'success'}, status=status.HTTP_204_NO_CONTENT)
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+
+    def __init__(self, data, **kwargs):
+        if data is None:
+            data = {'error': 'No records found.'}
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
 
 def index(request):
@@ -50,9 +105,25 @@ def test_alarm(request, alarm_id=None):
     return JsonResponse(obj, safe=False)
 
 
-class AlarmViewSet(viewsets.ModelViewSet):
+class AlarmViewSet(GenericViewSet):
     """
-    API endpoint that allows alarms to be viewed or edited.
+    API endpoint that allows Alarms to be viewed or edited.
     """
-    queryset = Alarm.objects.all().order_by('pk')
-    serializer_class = AlarmSerializer
+
+    serializer = AlarmSerializer
+    queryset = Alarm.objects.all()
+
+    def __init__(self, **kwargs):
+        super(AlarmViewSet, self).__init__(**kwargs)
+
+
+class VideoViewSet(GenericViewSet):
+    """
+    API endpoint that allows Alarms to be viewed or edited.
+    """
+
+    serializer = VideoSerializer
+    queryset = Video.objects.all()
+
+    def __init__(self, **kwargs):
+        super(VideoViewSet, self).__init__(**kwargs)
