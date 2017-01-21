@@ -16,14 +16,14 @@ broker = Broker()
 class GenericViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         queryset = self.queryset
-        serializer = self.serializer(self.paginate_queryset(queryset), many=True)
+        serializer = self.get_serializer(self.paginate_queryset(queryset), many=True)
         return JSONResponse(serializer.data)
 
     def create(self, request, **kwargs):
-        serializer = self.serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.create(serializer.data)
-            response_serializer = self.serializer(instance)
+            response_serializer = self.get_serializer(instance)
             return JSONResponse(response_serializer.data)
         else:
             return JSONResponse(serializer.errors)
@@ -31,7 +31,7 @@ class GenericViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None, **kwargs):
         instance = self.get_object()
         if instance:
-            serializer = self.serializer(instance)
+            serializer = self.get_serializer(instance)
             return JSONResponse(serializer.data)
         else:
             return JSONResponse(None)
@@ -39,10 +39,10 @@ class GenericViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None, **kwargs):
         instance = self.get_object()
         if instance:
-            serializer = self.serializer(data=request.data)
+            serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
                 instance = serializer.update(instance, serializer.data)
-                serializer = self.serializer(instance)
+                serializer = self.get_serializer(instance)
                 return JSONResponse(serializer.data)
             else:
                 return JSONResponse(serializer.errors)
@@ -110,7 +110,7 @@ class AlarmViewSet(GenericViewSet):
     API endpoint that allows Alarms to be viewed or edited.
     """
 
-    serializer = AlarmSerializer
+    serializer_class = AlarmSerializer
     queryset = Alarm.objects.all()
 
     def __init__(self, **kwargs):
@@ -122,7 +122,7 @@ class VideoViewSet(GenericViewSet):
     API endpoint that allows Alarms to be viewed or edited.
     """
 
-    serializer = VideoSerializer
+    serializer_class = VideoSerializer
     queryset = Video.objects.all()
 
     def __init__(self, **kwargs):

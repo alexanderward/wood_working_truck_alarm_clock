@@ -1,7 +1,6 @@
 from django.core.exceptions import AppRegistryNotReady
 import sys
 import os
-from django.forms.models import model_to_dict
 import datetime
 import time
 
@@ -15,6 +14,7 @@ except AppRegistryNotReady:
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alarm_clock.settings")
     django.setup()
+
 
 def get_timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')

@@ -3,7 +3,7 @@ from models import Alarm, Video
 
 
 class VideoSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
     name = serializers.CharField()
     url = serializers.URLField()
 
