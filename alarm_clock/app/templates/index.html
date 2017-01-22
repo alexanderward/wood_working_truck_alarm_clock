@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
 {% block body %}
     <div id="clock">
 			<span id="clocktext" style="font-size:24pt; font-kerning:none"></span>
@@ -13,10 +13,17 @@
     </iframe>
 {% endblock %}
 
+{% block javascript_imports %}
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/websocket.js' %}"></script>
+    <script src="{% static 'js/clock.js' %}"></script>
+    <script src="http://www.youtube.com/player_api"></script>
+    <script src="{% static 'js/videoPlayer.js' %}"></script>
+{% endblock %}
 
-{% block javascript %}
+{% block websocket_settings %}
         var sse_port = {{ sse_port }};
         var sse_channel = "{{ sse_channel }}";
-        var messageContainer = $("#messages");
-
+{% endblock %}
+{% block javascript %}
 {% endblock %}

@@ -7,6 +7,7 @@ from pubsub.networking.constants import ErrorCodes
 from pubsub.networking.client import Client
 import logging
 
+
 class Broker(object):
     __channels = list()
     __queue = Queue.Queue()

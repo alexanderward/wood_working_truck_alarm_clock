@@ -1,0 +1,40 @@
+/*#left-panel{*/
+    /*padding-top: 0;*/
+/*}*/
+.menu-on-top #main {
+    margin-left: 0!important;
+     margin-top: 0!important;
+}
+.alarm_enabled{
+    color: #31a225;
+}
+.alarm_disabled{
+    color: #777171;
+}
+.time{
+    font-size:xx-large;
+}
+.time-of-day{
+    font-size: small;
+}
+.days{
+    font-size: medium;
+}
+.alarm-table{
+    table-layout: fixed;
+    width:100%;
+}
+.alarm-table > tbody > tr > td:nth-child(1){
+    width: 15%;
+}
+.day-table{
+    table-layout: fixed;
+    width:100%;
+}
+#alarm-widget{
+    min-height: 0;
+}
+.alarm-clock-img{
+    height:34px;
+    width:30px;
+}

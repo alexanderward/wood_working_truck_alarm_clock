@@ -24,7 +24,7 @@ SECRET_KEY = 'j8j*j8^i8x9aoytogi7(8fb$ina)o)v!@k@kx6kw6_*)p6f_cy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -117,16 +117,23 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # DJANGO REST FRAMEWORK SETTINGS
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.IsAdminUser',
     ],
-    'PAGE_SIZE': 1000
+    'PAGE_SIZE': 1000,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+        , ]
+
 }
 
 # SSE SETTINGS
 SSE_PORT = 8888
-PUBSUB_SSE_CHANNEL = 'sse'
+PUBSUB_SSE_ALARM_TRUCK_CHANNEL = 'ALARM'
+PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL = 'ALARM-CONFIGURATION'
 
 # PUBSUB SETTINGS
 PUBSUB_SERVER_PORT = 10000

@@ -1,0 +1,108 @@
+{% extends 'config_base.html' %}
+{% load staticfiles %}
+{% block title %}Truck Alarm Clock{% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block content %}
+{% verbatim %}
+<div id="widget-grid">
+    <div ng-repeat="alarm in alarms" class="jarviswidget jarviswidget-color-red jarviswidget-sortable" id="wid-id-5" data-widget-colorbutton="false" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" role="widget">
+								<!-- widget options:
+									usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+									data-widget-colorbutton="false"
+									data-widget-editbutton="false"
+									data-widget-togglebutton="false"
+									data-widget-deletebutton="false"
+									data-widget-fullscreenbutton="false"
+									data-widget-custombutton="false"
+									data-widget-collapsed="true"
+									data-widget-sortable="false"
+
+								-->
+        <header role="heading"><div class="jarviswidget-ctrls" role="menu">     <a ng-click="deleteAlarm(alarm)" href="javascript:void(0);" class="button-icon jarviswidget-delete-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="{{ alarm.name }}"><i class="fa fa-times"></i></a></div>
+            <h2><strong>{{ alarm.name }}</strong></h2>
+
+        <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+        <!-- widget div-->
+        <div role="content">
+
+            <!-- widget edit box -->
+            <div class="jarviswidget-editbox">
+                <!-- This area used as dropdown edit box -->
+            </div>
+            <!-- end widget edit box -->
+
+            <!-- widget content -->
+            <div class="widget-body" id="alarm-widget">
+                <table class="alarm-table">
+                    <tr ng-click="editAlarm($event, alarm)">
+                        <td ng-if="alarm.enabled == true">
+                            <img class="alarm-clock-img" src="/static/img/enabled_alarm.png" ng-click="toggleAlarm($event, alarm)">
+                        </td>
+                        <td ng-if="alarm.enabled == false">
+                            <img class="alarm-clock-img" src="/static/img/disabled_alarm.png" ng-click="toggleAlarm($event, alarm)">
+                        </td>
+                        <td><span class="time">{{ alarm.time }}</span> <span class="time-of-day">{{ alarm.timeOfDay }}</span></td>
+                        <td>
+                            <table class="day-table">
+                                <tr>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.sunday, alarm_disabled: !alarm.sunday}">S</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.monday, alarm_disabled: !alarm.monday}">M</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.tuesday, alarm_disabled: !alarm.tuesday}">T</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.wednesday, alarm_disabled: !alarm.wednesday}">W</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.thursday, alarm_disabled: !alarm.thursday}">T</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.friday, alarm_disabled: !alarm.friday}">F</td>
+                                    <td class="days" ng-class="{alarm_enabled: alarm.saturday, alarm_disabled: !alarm.saturday}">S</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+                <!-- <h6 class="alert alert-warning semi-bold">
+                    <i class="fa fa-times"></i> By deleting a widget you will <strong>remove</strong> the widget from the page and will need to connect the backend with the onevent handler to delete it from database.
+                </h6> -->
+
+
+
+            </div>
+            <!-- end widget content -->
+
+        </div>
+        <!-- end widget div -->
+
+    </div>
+</div>
+{% endverbatim %}
+{% endblock %}}
+{% block websocket_settings %}
+    var sse_port = {{ sse_port }};
+    var sse_channel = "{{ sse_channel }}";
+{% endblock %}
+{% block javascript %}
+    <script src="{% static 'js/vendor/angularjs/angular.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-animate.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-aria.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-cookies.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-loader.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-message-format.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-messages.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-parse-ext.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-resource.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-route.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/angular-touch.min.js' %}"></script>
+    <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/services.js' %}"></script>
+    <script src="{% static 'js/controllers.js' %}"></script>
+{% endblock %}
+
+{% block footerNav %}
+<div id="next-lesson">
+
+</div>
+{% endblock %}

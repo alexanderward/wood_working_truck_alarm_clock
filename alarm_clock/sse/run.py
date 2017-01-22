@@ -138,7 +138,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
 
 
 app = tornado.web.Application([
-    (r'/ws/(?P<channel>\w*)', WebSocketHandler),
+    (r'/ws/(?P<channel>[\w\-\_]*)', WebSocketHandler),
 ])
 app.channels = {}
 

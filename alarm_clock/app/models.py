@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from alarm_clock.settings import PUBSUB_SSE_CHANNEL
+from alarm_clock.settings import PUBSUB_SSE_ALARM_TRUCK_CHANNEL
 from django.core.exceptions import ValidationError
 from django.db import models
 from pubsub.broker import Broker
@@ -60,7 +60,7 @@ class Alarm(models.Model):
         message = Commands.alarm_created(self)
         if not isinstance(message['alarm']['time'], basestring):
             message['alarm']['time'] = message['alarm']['time'].strftime("%H:%M:%S")
-        broker.publish(source='app.models.py', channel=PUBSUB_SSE_CHANNEL, message=message)
+        broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
 
     def __str__(self):
         return self.name

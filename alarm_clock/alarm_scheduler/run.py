@@ -2,7 +2,7 @@ import time
 
 import datetime
 
-from alarm_clock.settings import PUBSUB_SSE_CHANNEL
+from alarm_clock.settings import PUBSUB_SSE_ALARM_TRUCK_CHANNEL
 import threading
 import os, sys
 from django.core.exceptions import AppRegistryNotReady
@@ -43,7 +43,7 @@ class PubSubMonitor(threading.Thread):
 
 class Scheduler(object):
     def __init__(self):
-        self.channel = PUBSUB_SSE_CHANNEL
+        self.channel = PUBSUB_SSE_ALARM_TRUCK_CHANNEL
         self.alarms = self.convert_queryset_to_day_dict(Alarm.objects.all())
         self.pubsub = PubSub(self.channel)
         self.pubsub_monitor = PubSubMonitor(self, self.channel)

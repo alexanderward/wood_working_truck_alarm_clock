@@ -1,13 +1,13 @@
-from alarm_clock.settings import SSE_PORT, PUBSUB_SSE_CHANNEL
+from alarm_clock.settings import SSE_PORT, PUBSUB_SSE_ALARM_TRUCK_CHANNEL, PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL
 from django.http import JsonResponse
 from django.shortcuts import render
 from pubsub.broker import Broker
 from rest_framework import status, viewsets
 from models import Alarm, Video
+from rest_framework.exceptions import ValidationError
 from serializers import AlarmSerializer, VideoSerializer
-from django.forms.models import model_to_dict
 from sse.commands import Commands
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from rest_framework.renderers import JSONRenderer
 
 broker = Broker()
@@ -45,12 +45,12 @@ class GenericViewSet(viewsets.ModelViewSet):
                 serializer = self.get_serializer(instance)
                 return JSONResponse(serializer.data)
             else:
-                return JSONResponse(serializer.errors)
+                raise ValidationError(serializer.errors)
 
     def destroy(self, request, pk=None, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return JSONResponse({'status': 'success'}, status=status.HTTP_204_NO_CONTENT)
+        return JSONResponse({'status': 'success'})
 
 
 class JSONResponse(HttpResponse):
@@ -67,24 +67,31 @@ class JSONResponse(HttpResponse):
 
 
 def index(request):
-    return render(request, 'index.html', context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_CHANNEL})
+    return render(request, 'index.html', context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_ALARM_TRUCK_CHANNEL})
+
+
+def configure(request):
+    return render(request, 'configure.html', context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL})
 
 
 def test_alarm(request, alarm_id=None):
-    alarm = Alarm.objects.filter(pk=alarm_id).first()
+    try:
+        alarm = Alarm.objects.get(pk=alarm_id)
+    except Alarm.DoesNotExist:
+        raise Http404
     obj = {}
     error_msg = None
     if not alarm and alarm is not None:
         obj = {'error': 'Not a valid id for any alarm!'}
     elif request.method == 'GET':
-        obj = model_to_dict(alarm)
+        obj = AlarmSerializer(alarm).data
     elif request.method == 'POST':
         event = request.POST.get('event')
         if event == 'start':
             try:
                 status = 'success'
                 message = Commands.start_alarm(alarm)
-                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_CHANNEL, message=message)
+                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
             except Exception as e:
                 status = 'failed'
                 error_msg = str(e)
@@ -92,13 +99,13 @@ def test_alarm(request, alarm_id=None):
             try:
                 status = 'success'
                 message = Commands.stop_alarm(alarm)
-                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_CHANNEL, message=message)
+                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
             except Exception as e:
                 status = 'failed'
                 error_msg = str(e)
         else:
             status = 'unknown event'
-        obj = {'event': event, 'status': status, 'alarm': 'Broadcast Stop' if not alarm else model_to_dict(alarm)}
+        obj = {'event': event, 'status': status, 'alarm': 'Broadcast Stop' if not alarm else AlarmSerializer(alarm).data}
         if error_msg:
             obj.update({'error_msg': error_msg})
 
