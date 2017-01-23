@@ -4,29 +4,33 @@ var app = angular.module('app', ['ngWebsocket'])
         var ws = $websocket.$new("ws://"+window.location.hostname + ":" + sse_port + "/ws/" + sse_channel)
           .$on('$open', function () {
             console.log('Connected to WS.');
-
-            // var data = {
-            //     level: 1,
-            //     text: 'ngWebsocket rocks!',
-            //     array: ['one', 'two', 'three'],
-            //     nested: {
-            //         level: 2,
-            //         deeper: [{
-            //             hell: 'yeah'
-            //         }, {
-            //             so: 'good'
-            //         }]
-            //     }
-            // };
-            //
-            // ws.$emit('ping', 'hi listening websocket server') // send a message to the websocket server
-            //   .$emit('pong', data);
-          })
-          .$on('pong', function (data) {
-            console.log('The websocket server has sent the following data:');
-            console.log(data);
-
-            ws.$close();
+          }).$on('userConnected', function (data) {
+                //noinspection JSUnresolvedVariable
+                threadID = data.threadID;
+            }).$on('alarmCreated', function (data) {
+                function addAlarm(data) {
+                    var scope = angular.element(document.getElementById("alarm-widget")).scope();
+                    scope.$apply(function () {
+                    scope.addAlarmToUI(data);
+                    });
+                }
+                addAlarm(data);                
+          }).$on('alarmDeleted', function (data) {
+                function deleteAlarm(data) {
+                    var scope = angular.element(document.getElementById("alarm-widget")).scope();
+                    scope.$apply(function () {
+                    scope.deleteAlarmFromUI(data);
+                    });
+                }
+                deleteAlarm(data);
+          }).$on('alarmUpdated', function (data) {
+                function toggleAlarmUI(data) {
+                    var scope = angular.element(document.getElementById("alarm-widget")).scope();
+                    scope.$apply(function () {
+                    scope.toggleAlarmUI(data);
+                    });
+                }
+                toggleAlarmUI(data);
           })
           .$on('$close', function () {
             console.log('WS Closed.');

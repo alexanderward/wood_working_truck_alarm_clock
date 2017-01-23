@@ -34,19 +34,18 @@ var actions = {
     }
 };
 
-var conductAction = function (message) {
-    var event = message.event;
+var conductAction = function (event ,data) {
     if (event){
         if (event == 'startAlarm'){
-            actions.startAlarm(message.alarm);
+            actions.startAlarm(data);
         }else if(event == 'stopAlarm'){
-            actions.stopAlarm(message.alarm);
+            actions.stopAlarm(data);
         }else if(event == 'alarmCreated'){
-            actions.alarmCreated(message);
+            actions.alarmCreated(data);
         }else if(event == 'userConnected'){
-            actions.userConnected(message.message);
+            actions.userConnected(data);
         }else if(event == 'userDisconnected'){
-            actions.userDisconnected(message.message);
+            actions.userDisconnected(data);
         }else{
             console.log('Unknown event: ' + event);
         }

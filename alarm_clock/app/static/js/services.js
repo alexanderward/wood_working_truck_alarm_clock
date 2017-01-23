@@ -20,6 +20,9 @@ app.factory('AlarmService', function ($http, $q) {
             toggleAlarm: function(alarm) {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
+                console.log('ThreadID: '+ threadID);
+                alarm.last_edited_by = threadID;
+                console.log(alarm);
                 return $http.put('/api/alarms/'+alarm.id+'/', alarm)
                     .then(function(response) {
                         if (typeof response.data === 'object') {
@@ -37,6 +40,7 @@ app.factory('AlarmService', function ($http, $q) {
             createAlarm: function(alarm) {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
+                alarm.last_edited_by = threadID;
                 return $http.post('/api/alarms/', alarm)
                     .then(function(response) {
                         if (typeof response.data === 'object') {
@@ -54,6 +58,7 @@ app.factory('AlarmService', function ($http, $q) {
             deleteAlarm: function(alarm) {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
+                alarm.last_edited_by = threadID;
                 return $http.delete('/api/alarms/'+alarm.id+'/')
                     .then(function(response) {
                         if (typeof response.data === 'object') {

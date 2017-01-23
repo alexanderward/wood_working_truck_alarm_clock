@@ -6,8 +6,8 @@ var WebSocketTest = function() {
         };
         ws.onmessage = function (evt) {
             var received_msg = evt.data;            
-            var data = JSON.parse(received_msg);
-            conductAction(data);
+            var message = JSON.parse(received_msg);
+            conductAction(message.event, message.data);
         };
         ws.onclose = function() {
             console.log('Disconnected from SSE Server');

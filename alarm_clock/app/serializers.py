@@ -37,12 +37,13 @@ class AlarmSerializer(serializers.Serializer):
     friday = serializers.BooleanField()
     saturday = serializers.BooleanField()
     enabled = serializers.BooleanField()
+    last_edited_by = serializers.IntegerField(allow_null=True)
 
     class Meta:
         model = Alarm
         fields = (
             'id', 'name', 'video', 'time', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
-            'enabled')
+            'enabled', 'last_edited_by')
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -58,10 +59,11 @@ class AlarmSerializer(serializers.Serializer):
         instance.friday = validated_data.get('friday', instance.friday)
         instance.saturday = validated_data.get('saturday', instance.saturday)
         instance.enabled = validated_data.get('enabled', instance.enabled)
+        instance.last_edited_by = validated_data.get('last_edited_by', instance.enabled)
         try:
             instance.save(
                 update_fields=['name', 'video', 'time', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',
-                               'friday', 'saturday', 'enabled'])
+                               'friday', 'saturday', 'enabled', 'last_edited_by'])
         except Exception as e:
             raise serializers.ValidationError(str(e))
 

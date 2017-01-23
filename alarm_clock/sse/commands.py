@@ -37,7 +37,7 @@ class Commands(object):
         alarm = Commands.__get_alarm(alarm_name)
         if alarm:
             return {'event': 'startAlarm',
-                    'alarm': AlarmSerializer(alarm).data}
+                    'data': AlarmSerializer(alarm).data}
 
     @staticmethod
     def stop_alarm(alarm_name=None):
@@ -49,19 +49,33 @@ class Commands(object):
             alarm = AlarmSerializer(alarm).data
         if alarm:
             return {'event': 'stopAlarm',
-                    'alarm': alarm}
+                    'data': alarm}
 
     @staticmethod
     def alarm_created(alarm_name):
         from app.serializers import AlarmSerializer
         alarm = Commands.__get_alarm(alarm_name)
         return {'event': 'alarmCreated',
-                'alarm': AlarmSerializer(alarm).data}
+                'data': AlarmSerializer(alarm).data}
+
+    @staticmethod
+    def alarm_deleted(alarm_name):
+        from app.serializers import AlarmSerializer
+        alarm = Commands.__get_alarm(alarm_name)
+        return {'event': 'alarmDeleted',
+                'data': AlarmSerializer(alarm).data}
+
+    @staticmethod
+    def alarm_updated(alarm_name):
+        from app.serializers import AlarmSerializer
+        alarm = Commands.__get_alarm(alarm_name)
+        return {'event': 'alarmUpdated',
+                'data': AlarmSerializer(alarm).data}
 
     @staticmethod
     def user_connected():
-        return {'event': 'userConnected', 'message': "[%s] - Connected" % get_timestamp()}
+        return {'event': 'userConnected', 'data': {'message': "[%s] - Connected" % get_timestamp()}}
 
     @staticmethod
     def user_disconnected():
-        return {'event': 'userDisconnected', 'message': "[%s] - Disconnected" % get_timestamp()}
+        return {'event': 'userDisconnected', 'data': {'message': "[%s] - Disconnected" % get_timestamp()}}

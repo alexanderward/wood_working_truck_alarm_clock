@@ -37,6 +37,7 @@ class GenericViewSet(viewsets.ModelViewSet):
             return JSONResponse(None)
 
     def update(self, request, pk=None, **kwargs):
+        print request.data, kwargs
         instance = self.get_object()
         if instance:
             serializer = self.get_serializer(data=request.data)

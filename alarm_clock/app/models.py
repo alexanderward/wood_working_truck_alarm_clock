@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
-from alarm_clock.settings import PUBSUB_SSE_ALARM_TRUCK_CHANNEL
+from alarm_clock.settings import PUBSUB_SSE_ALARM_TRUCK_CHANNEL, PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_delete
 from pubsub.broker import Broker
 from sse.commands import Commands
 import re
@@ -50,17 +51,39 @@ class Alarm(models.Model):
     friday = models.BooleanField(default=False)
     saturday = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
+    last_edited_by = models.IntegerField(null=True)
 
     def clean(self):
         super(Alarm, self).clean()
         self.video = clean_youtube_link(self.video)
 
     def save(self, *args, **kwargs):
+        def convert_time(message):
+            if not isinstance(message['data']['time'], basestring):
+                message['data']['time'] = message['data']['time'].strftime("%H:%M:%S")
+            return message
+
         super(Alarm, self).save(*args, **kwargs)
-        message = Commands.alarm_created(self)
-        if not isinstance(message['alarm']['time'], basestring):
-            message['alarm']['time'] = message['alarm']['time'].strftime("%H:%M:%S")
-        broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
+        if 'update_fields' not in kwargs.keys():
+            message = Commands.alarm_created(self)
+            message = convert_time(message)
+            broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
+            broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL,
+                           message=message)
+        else:
+            message = Commands.alarm_updated(self)
+            message = convert_time(message)
+            # broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
+            broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL,
+                           message=message)
 
     def __str__(self):
         return self.name
+
+
+def alarm_deleted_publish(sender, instance, **kwargs):
+    message = Commands.alarm_deleted(instance)
+    broker.publish(source='app.models.py', channel=PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL, message=message)
+
+
+post_delete.connect(alarm_deleted_publish, sender=Alarm)

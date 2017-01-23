@@ -5,7 +5,16 @@ app.controller('Configure', function($scope, AlarmService, VideoService){
 		tmp_time = convertTo12Hour(time);
 		return tmp_time.split(' ');
 	};
-
+	var find_alarm_in_array = function(alarm){
+		var index;
+		$scope.alarms.forEach(function (value, i) {
+			if (value.id == alarm.id){
+				index = i;
+				return true;
+			}
+		});
+		return index;
+	};
     AlarmService.getAlarms()
         .then(function(data) {
 					$.each(data, function(index, value){
@@ -42,14 +51,34 @@ app.controller('Configure', function($scope, AlarmService, VideoService){
         });
 
     };
+	$scope.toggleAlarmUI = function(alarm){
+		if (alarm.last_edited_by != threadID){
+			var i = find_alarm_in_array(alarm);
+			if (i === parseInt(i)){
+				$scope.alarms[i].enabled = !$scope.alarms[i].enabled;
+			}
+		}
+	};
 
 	$scope.addAlarm = function(){
 		console.log('New Alarm');
 	};
-	$scope.deleteAlarm = function(alarm){
+	$scope.addAlarmToUI = function(alarm){
+		[alarm.time, alarm.timeOfDay] = convertTime(alarm.time);
+		$scope.alarms.push(alarm);
+	};
+
+	$scope.deleteAlarmFromUI = function(alarm){
+		var i = find_alarm_in_array(alarm);
+		if (i === parseInt(i)){
+			$scope.alarms.splice(i, 1);
+		}
+	};
+
+	$scope.deleteAlarm = function(index){
+		var alarm = $scope.alarms[index];
 		AlarmService.deleteAlarm(alarm).then(function(data) {
-				$scope.alarms.splice($scope.alarms.indexOf(alarm), 1);
-				console.log("Deleted Alarm: " + alarm.name);
+				$scope.deleteAlarmFromUI(alarm);
             }, function(error) {
 			    console.log(error);
 			    alert(error);

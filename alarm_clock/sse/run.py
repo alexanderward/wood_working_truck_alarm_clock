@@ -46,13 +46,15 @@ class PubSub(threading.Thread):
         self.broker = Broker()
         self.broker.subscribe(channel)
         self.output = Queue()
+        self.channel = channel
 
     def run(self):
         for source, channel, message in self.broker.listen():
             with self.lock:
                 if self._stopevent.isSet():
                     break
-                self.output.put((self._Thread__ident, source, channel, message))
+                elif channel == self.channel:
+                    self.output.put((self._Thread__ident, source, channel, message))
 
     def stop(self):
         self.broker.stop()
@@ -111,10 +113,18 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
         self.client_pub_sub = ClientPubSub(self, user_id=self.user_id)
         self.client_pub_sub.start()
         print 'WebSocketHandler - Starting Session with user: %s' % self.user_id
+        self.on_connect()
+
+    def on_connect(self):
+        from commands import Commands
+        message = Commands.user_connected()
+        message['data'].update({'threadID': self.channel_feed._Thread__ident})
+        self.write_message(message)
 
     def on_message(self, message):
-        from commands import Commands
-        self.write_message(Commands.user_connected())
+        # todo - if i want to implement messages from client
+        # self.write_message(message)
+        pass
 
     def on_close(self):
         from commands import Commands
@@ -130,7 +140,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler, PubSubMixin):
 
     def send_message(self, thread_id, source, channel, message):
         print "WebSocketHandler(%s) - Sending message for %s: %s -> %s: %s" % (
-        thread_id, self.user_id, source, channel, message)
+            thread_id, self.user_id, source, channel, message)
+        # message['data'].update({'source': source, 'threadID': thread_id})
         self.write_message(message)
 
     def check_origin(self, origin):
