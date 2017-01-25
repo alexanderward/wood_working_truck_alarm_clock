@@ -1,6 +1,7 @@
 from alarm_clock.settings import SSE_PORT, PUBSUB_SSE_ALARM_TRUCK_CHANNEL, PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.generic import TemplateView
 from pubsub.broker import Broker
 from rest_framework import status, viewsets
 from models import Alarm, Video
@@ -11,6 +12,13 @@ from django.http import HttpResponse, Http404
 from rest_framework.renderers import JSONRenderer
 
 broker = Broker()
+
+
+class PartialGroupView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super(PartialGroupView, self).get_context_data(**kwargs)
+        # update the context
+        return context
 
 
 class GenericViewSet(viewsets.ModelViewSet):
@@ -72,7 +80,8 @@ def index(request):
 
 
 def configure(request):
-    return render(request, 'configure.html', context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL})
+    return render(request, 'configure.html',
+                  context={'sse_port': SSE_PORT, 'sse_channel': PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL})
 
 
 def test_alarm(request, alarm_id=None):
@@ -92,7 +101,8 @@ def test_alarm(request, alarm_id=None):
             try:
                 status = 'success'
                 message = Commands.start_alarm(alarm)
-                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
+                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL,
+                               message=message)
             except Exception as e:
                 status = 'failed'
                 error_msg = str(e)
@@ -100,13 +110,15 @@ def test_alarm(request, alarm_id=None):
             try:
                 status = 'success'
                 message = Commands.stop_alarm(alarm)
-                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
+                broker.publish(source='app.views.test_alarm.POST', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL,
+                               message=message)
             except Exception as e:
                 status = 'failed'
                 error_msg = str(e)
         else:
             status = 'unknown event'
-        obj = {'event': event, 'status': status, 'alarm': 'Broadcast Stop' if not alarm else AlarmSerializer(alarm).data}
+        obj = {'event': event, 'status': status,
+               'alarm': 'Broadcast Stop' if not alarm else AlarmSerializer(alarm).data}
         if error_msg:
             obj.update({'error_msg': error_msg})
 

@@ -50,7 +50,7 @@
 
 	</head>
 
-	<body class="menu-on-top fixed-header" ng-controller="Configure" ng-cloak>
+	<body class="menu-on-top fixed-header" ng-cloak>
 
 		<!-- #HEADER -->
 		<header id="header">
@@ -66,7 +66,8 @@
 			<!-- #TOGGLE LAYOUT BUTTONS -->
 			<!-- pulled right: nav area -->
 			<div class="pull-right" style="padding:8px">
-                <a class="btn btn-primary" href="javascript:void(0);" ng-click="addAlarm()"><i class="fa fa-plus"></i> Add</a>
+                <div id="action-Btn"></div>
+{#                <a class="btn btn-primary" ui-sref="newAlarm" id="action-Btn"><i class="fa fa-plus"></i> Add</a>#}
 				<!-- collapse menu button -->
 {#				<div id="hide-menu" class="btn-header pull-right">#}
 {#					<span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>#}
@@ -96,17 +97,21 @@
 				<!-- col -->
 
 				<!-- end col -->
-                <div id="content">
-                    <div class="row">
-                        <div class="col-xs-14 col-sm-8 col-md-10">
-                            {% block content %}
+                <div id="content" class="container">
+                    <div class="row row-centered">
+                        {% block content %}
                             {% endblock %}
                             {% block footerNav %}
                             {% endblock %}
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-2">
-                            <div class="ads"></div>
-                        </div>
+{#                        <div class="col-xs-3 col-sm-1"></div>#}
+{#                        <div class="col-xs-6 col-sm-3">#}
+{#                        <div class="col-xs-14 col-sm-8 col-md-10">#}
+{#                            #}
+{#                        </div>#}
+{#                        <div class="col-xs-3 col-sm-1">#}
+{#                        <div class="col-xs-4 col-sm-4 col-md-2">#}
+{#                            <div class="ads"></div>#}
+{#                        </div>#}
                     </div>
                 </div>
 
@@ -215,7 +220,26 @@
 		<script src="{% static 'js/vendor/smartadmin/smart-chat-ui/smart.chat.ui.min.js' %}"></script>
 		<script src="{% static 'js/vendor/smartadmin/smart-chat-ui/smart.chat.manager.min.js' %}"></script>
         <script src="{% static 'js/actions.js' %}"></script>
-
+        <script src="{% static 'js/vendor/angularjs/angular.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-animate.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-aria.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-cookies.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-loader.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-message-format.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-messages.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-parse-ext.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-resource.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-route.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-sanitize.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-touch.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/angular-ui-router.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
+        <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
+        <script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/app.js' %}"></script>
+        <script src="{% static 'js/services.js' %}"></script>
+        <script src="{% static 'js/controllers/homeController.js' %}"></script>
+        <script src="{% static 'js/controllers/newAlarmController.js' %}"></script>
 
         {% block javascript %}{% endblock %}
 

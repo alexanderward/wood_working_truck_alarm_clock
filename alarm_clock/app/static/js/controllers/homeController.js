@@ -1,5 +1,5 @@
 
-app.controller('Configure', function($scope, AlarmService, VideoService){
+app.controller('HomeCtrl', function($scope, AlarmService){
 	var convertTime = function (time) {
 		var tmp_time;
 		tmp_time = convertTo12Hour(time);
@@ -15,6 +15,10 @@ app.controller('Configure', function($scope, AlarmService, VideoService){
 		});
 		return index;
 	};
+
+	$('#action-Btn').html('<a class="btn btn-primary" href="#!/newAlarm"><i class="fa fa-plus"></i> Add</a>');
+
+
     AlarmService.getAlarms()
         .then(function(data) {
 					$.each(data, function(index, value){
@@ -25,14 +29,7 @@ app.controller('Configure', function($scope, AlarmService, VideoService){
             }, function(error) {
                    console.log(error)
         });
-    VideoService.getVideos()
-        .then(function(data) {
-                    $scope.videos = data;
-                    console.log($scope.videos);
-            }, function(error) {
-                   console.log(error)
-        });
-	
+
 	$scope.editAlarm = function(event, team){
      	console.log(event.currentTarget, team);
     };

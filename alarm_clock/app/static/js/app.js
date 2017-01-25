@@ -1,5 +1,19 @@
 'use strict';
-var app = angular.module('app', ['ngWebsocket'])
+var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.bootstrap'])
+    .config(['$urlRouterProvider','$stateProvider', function($urlRouterProvider, $stateProvider) {
+        $urlRouterProvider.otherwise('/');
+        $stateProvider
+            .state('home', {
+                url:'/',
+                templateUrl: '/partials/home.html',
+                controller: 'HomeCtrl'
+            })
+            .state('newAlarm', {
+                url:'/newAlarm',
+                templateUrl: '/partials/new-alarm.html',
+                controller: 'NewAlarmCtrl'
+            });
+    }])
     .run(function ($websocket) {
         var ws = $websocket.$new("ws://"+window.location.hostname + ":" + sse_port + "/ws/" + sse_channel)
           .$on('$open', function () {
