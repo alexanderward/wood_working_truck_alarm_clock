@@ -5,6 +5,12 @@
 .alarm_enabled{
     color: #31a225;
 }
+.repeat_alarm_day_enabled{
+    background-color: #31a225;
+}
+.repeat_alarm_day_disabled{
+    background-color: #777171;;
+}
 .alarm_disabled{
     color: #777171;
 }
@@ -48,16 +54,18 @@ tr{
 .am-pm > button{
     height:60%;
     font-size: 25px;
+    margin-left: 10px;
 }
 .uib-separator{
     font-size: 70px;
 }
 
 .modify-table, .modify-table > tbody > tr > td {
-   border: 1px solid black;
+    border: 1px solid black;
     table-layout: fixed;
     width:100%;
     text-align: center;
+    color: whitesmoke;
 }
 
 .form-actions-2{

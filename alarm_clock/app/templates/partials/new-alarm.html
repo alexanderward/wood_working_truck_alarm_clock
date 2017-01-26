@@ -1,66 +1,103 @@
-{% verbatim %}
+    {% verbatim %}
 <div class="container" ng-cloak>
     <div class="row row-centered">
-        <div uib-timepicker ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
-        <!--<pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre>-->
-        <hr>
-        <h3><strong>Repeat</strong></h3>
-        <table class="modify-table">
-            <tr>
-                <td class="days alarm_disabled" >S</td>
-                <td class="days alarm_disabled" >M</td>
-                <td class="days alarm_disabled" >T</td>
-                <td class="days alarm_disabled" >W</td>
-                <td class="days alarm_disabled" >T</td>
-                <td class="days alarm_disabled" >F</td>
-                <td class="days alarm_disabled" >S</td>
-            </tr>
-        </table>
 
-        <hr>
-        <h3><strong>Video</strong></h3>
-        <!--<div class="alert adjusted alert-info fade in">
-            <i class="fa-fw fa-lg fa fa-exclamation"></i>
-            <strong>Select the video to be played.</strong>
-        </div>-->
-        <div class="input-group">
-            <select name="videoDropdown" ng-model="data.alarmVideo" class="form-control">
-                <option ng-repeat="video in videos" value="{{ video.name }}">{{ video.name }}</option>
-            </select>
-            <div class="input-group-btn">
-                <button class="btn btn-primary"><i class="fa fa-gear fa-lg"></i></button>
-            </div>
+        <div class="jarviswidget jarviswidget-color-blueDark jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false" data-widget-attstyle="jarviswidget-color-blueDark" role="widget" style="">
+				<!-- widget options:
+					usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
 
-        </div>
-        <hr>
-        <h3><strong>Flashing Lights</strong></h3>
-        <!--<div class="alert adjusted alert-info fade in">
-            <i class="fa-fw fa-lg fa fa-exclamation"></i>
-            <strong>Flash lights when alarm goes off.</strong>
-        </div>-->
-        <div class="form-group">
-                <label class="radio-inline">
-                    <input type="radio" class="radiobox" name="style-0a">
-                    <span>Enabled</span>
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" class="radiobox" name="style-0a">
-                    <span>Disabled</span>
-                </label>
-        </div>
+					data-widget-colorbutton="false"
+					data-widget-editbutton="false"
+					data-widget-togglebutton="false"
+					data-widget-deletebutton="false"
+					data-widget-fullscreenbutton="false"
+					data-widget-custombutton="false"
+					data-widget-collapsed="true"
+					data-widget-sortable="false"
 
-        <input class="form-control" type="text" placeholder="Alarm Name....">
-        <div class="form-actions-2">
-            <div class="btn btn-primary btn-lg">
-                <i class="fa fa-save"></i>
-                Submit
-            </div>
-            <div class="btn btn-danger btn-lg">
-                <i class="fa fa-times"></i>
-                Cancel
-            </div>
-        </div>
+				-->
+				<header role="heading"><div class="jarviswidget-ctrls" role="menu"></div>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>Create Alarm </h2>
+                    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+                </header>
 
+				<!-- widget div-->
+				<div role="content">
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+
+						<form class="smart-form" novalidate="novalidate">
+							<fieldset>
+                                <div class="alert alert-info alert-block">
+                                    <h4 class="alert-heading">Set time</h4>
+                                </div>
+                                    <div uib-timepicker ng-model="form.alarmTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
+                                <table class="modify-table">
+                                    <tr>
+                                        <td class="days" ng-click="form.repeatDays.sunday = !form.repeatDays.sunday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.sunday, repeat_alarm_day_disabled: !form.repeatDays.sunday}">S</td>
+                                        <td class="days" ng-click="form.repeatDays.monday = !form.repeatDays.monday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.monday, repeat_alarm_day_disabled: !form.repeatDays.monday}">M</td>
+                                        <td class="days" ng-click="form.repeatDays.tuesday = !form.repeatDays.tuesday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.tuesday, repeat_alarm_day_disabled: !form.repeatDays.tuesday}">T</td>
+                                        <td class="days" ng-click="form.repeatDays.wednesday = !form.repeatDays.wednesday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.wednesday, repeat_alarm_day_disabled: !form.repeatDays.wednesday}">W</td>
+                                        <td class="days" ng-click="form.repeatDays.thursday = !form.repeatDays.thursday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.thursday, repeat_alarm_day_disabled: !form.repeatDays.thursday}">T</td>
+                                        <td class="days" ng-click="form.repeatDays.friday = !form.repeatDays.friday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.friday, repeat_alarm_day_disabled: !form.repeatDays.friday}">F</td>
+                                        <td class="days" ng-click="form.repeatDays.saturday = !form.repeatDays.saturday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.saturday, repeat_alarm_day_disabled: !form.repeatDays.saturday}">S</td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <fieldset>
+                                <section class="col col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2" for="prepend"><h6><strong>Select Alarm</strong></h6></label>
+                                        <div class="col-md-10">
+                                            <div class="input-group">
+                                                <select name="videoDropdown" ng-model="form.video" required ng-options="option as option.name for option in videos" class="form-control">
+                                                    <option style="display:none" value=""></option>
+                                                </select>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" style="padding: 7px 10px 7px 10px;margin-left: 5px;"> <i class="fa fa-gear"></i> </button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </section>
+                                <section class="col col-md-3">
+                                    <label class="toggle">
+                                        <input type="checkbox" name="checkbox-toggle" checked="checked" ng-model="form.flashingLights">
+                                        <i data-swchon-text="ON" data-swchoff-text="OFF"></i><label><strong>Flashing Lights</strong></label>
+                                    </label>
+                                </section>
+                                <section class="col col-3"></section>
+                                <section class="col col-6">
+                                    <label class="input form-control"> <i class="icon-prepend fa fa-clock-o"></i>
+											<input type="text" name="" placeholder="Alarm name" ng-model="form.name">
+										</label>
+                                </section>
+                            </fieldset>
+
+							<footer>
+								<div class="form-actions-2">
+                                    <a class="btn btn-primary btn-lg">
+                                        <i class="fa fa-save"></i>
+                                        Submit
+                                    </a>
+                                    <a class="btn btn-danger btn-lg" ui-sref="home">
+                                        <i class="fa fa-times"></i>
+                                        Cancel
+                                    </a>
+                                </div>
+							</footer>
+						</form>
+
+					</div>
+					<!-- end widget content -->
+
+				</div>
+				<!-- end widget div -->
+
+			</div>
     </div>
 </div>
 {% endverbatim %}
