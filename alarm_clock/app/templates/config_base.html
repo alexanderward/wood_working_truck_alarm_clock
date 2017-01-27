@@ -240,6 +240,7 @@
         <script src="{% static 'js/services.js' %}"></script>
         <script src="{% static 'js/controllers/homeController.js' %}"></script>
         <script src="{% static 'js/controllers/newAlarmController.js' %}"></script>
+        <script src="{% static 'js/controllers/editVideoController.js' %}"></script>
 
         {% block javascript %}{% endblock %}
 
@@ -249,6 +250,7 @@
 
 		$(document).ready(function() {
             {% block inlineScript %}{% endblock %}
+
 		});
 
 		</script>

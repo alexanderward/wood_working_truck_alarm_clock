@@ -74,3 +74,16 @@ tr{
     margin-top: 25px;
     text-align: right;
 }
+
+.hours > a, .minutes > a {
+    font-size: xx-large;
+}
+
+
+
+/*.modal:nth-of-type(even) {*/
+    /*z-index: 1052 !important;*/
+/*}*/
+/*.modal-backdrop.in:nth-of-type(even) {*/
+    /*z-index: 1051 !important;*/
+/*}*/
