@@ -27,7 +27,7 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 
-						<form class="smart-form" ng-submit="submit()" name="alarmForm">
+						<form class="smart-form" ng-submit="submit()" name="alarmForm" novalidate="novalidate">
 							<fieldset>
                                 <div class="alert alert-info alert-block">
                                     <h4 class="alert-heading">Set time</h4>
@@ -67,8 +67,8 @@
                                                 <select name="videoDropdown" ng-model="form.video" required ng-options="option as option.name for option in videos" class="form-control">
                                                     <option value="" disabled selected>Select a Video to Play</option>
                                                 </select>
-                                                <span class="input-group-btn" data-toggle="modal" data-target="#newAlarmModal">
-                                                    <button class="btn btn-primary" style="padding: 7px 10px 7px 10px;margin-left:3px; margin-top:18px;"> <i class="fa fa-gear"></i> </button>
+                                                <span class="input-group-btn" data-toggle="modal" data-target="#newAlarmModal" type="button">
+                                                    <a class="btn btn-primary" style="padding: 7px 10px 7px 10px;margin-left:3px; margin-top:18px;"> <i class="fa fa-gear"></i> </a>
                                                 </span>
                                             </div>
                                             <div class="has-error note note-error" ng-show="alarmForm.$invalid">
