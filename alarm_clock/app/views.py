@@ -8,7 +8,7 @@ from models import Alarm, Video
 from rest_framework.exceptions import ValidationError
 from serializers import AlarmSerializer, VideoSerializer
 from sse.commands import Commands
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from rest_framework.renderers import JSONRenderer
 
 broker = Broker()
@@ -34,7 +34,7 @@ class GenericViewSet(viewsets.ModelViewSet):
             response_serializer = self.get_serializer(instance)
             return JSONResponse(response_serializer.data)
         else:
-            return JSONResponse(serializer.errors)
+            raise ValidationError(serializer.errors)
 
     def retrieve(self, request, pk=None, **kwargs):
         instance = self.get_object()
@@ -45,7 +45,6 @@ class GenericViewSet(viewsets.ModelViewSet):
             return JSONResponse(None)
 
     def update(self, request, pk=None, **kwargs):
-        print request.data, kwargs
         instance = self.get_object()
         if instance:
             serializer = self.get_serializer(data=request.data)

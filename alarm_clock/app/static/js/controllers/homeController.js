@@ -1,5 +1,10 @@
 
-app.controller('HomeCtrl', function($scope, AlarmService){
+app.controller('HomeCtrl', function($scope, AlarmService, $stateParams){
+	console.log('Stateparams: ', $stateParams);
+	if ($stateParams.notification){
+		notificationPopup($stateParams.notification.title, $stateParams.notification.message, $stateParams.notification.status, $stateParams.notification.icon);		
+	}
+
 	var convertTime = function (time) {
 		var tmp_time;
 		tmp_time = convertTo12Hour(time);
@@ -57,18 +62,17 @@ app.controller('HomeCtrl', function($scope, AlarmService){
 		}
 	};
 
-	$scope.addAlarm = function(){
-		console.log('New Alarm');
-	};
 	$scope.addAlarmToUI = function(alarm){
 		[alarm.time, alarm.timeOfDay] = convertTime(alarm.time);
 		$scope.alarms.push(alarm);
+		notificationPopup("Alarm Created!", 'Successfully created new Alarm: ' + alarm.name, "success", "fa fa-check");
 	};
 
 	$scope.deleteAlarmFromUI = function(alarm){
 		var i = find_alarm_in_array(alarm);
 		if (i === parseInt(i)){
 			$scope.alarms.splice(i, 1);
+			notificationPopup("Deleted Alarm", "Successfully Deleted Alarm: " + alarm.name, "success", "fa fa-trash");
 		}
 	};
 
@@ -78,7 +82,6 @@ app.controller('HomeCtrl', function($scope, AlarmService){
 				$scope.deleteAlarmFromUI(alarm);
             }, function(error) {
 			    console.log(error);
-			    alert(error);
         });
 	}
 

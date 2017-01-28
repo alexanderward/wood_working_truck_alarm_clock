@@ -6,7 +6,10 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
             .state('home', {
                 url:'/',
                 templateUrl: '/partials/home.html',
-                controller: 'HomeCtrl'
+                controller: 'HomeCtrl',
+                params: {
+                    notification: null
+                }
             })
             .state('newAlarm', {
                 url:'/newAlarm',

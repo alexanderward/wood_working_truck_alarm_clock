@@ -27,43 +27,52 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 
-						<form class="smart-form" novalidate="novalidate">
+						<form class="smart-form" ng-submit="submit()" name="alarmForm">
 							<fieldset>
                                 <div class="alert alert-info alert-block">
                                     <h4 class="alert-heading">Set time</h4>
                                 </div>
-                                    <div uib-timepicker ng-model="form.alarmTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
+                                    <div uib-timepicker ng-model="alarmTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
                                 <br><br>
                                 <table class="modify-table">
                                     <tr>
-                                        <td class="days" ng-click="form.repeatDays.sunday = !form.repeatDays.sunday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.sunday, repeat_alarm_day_disabled: !form.repeatDays.sunday}">S</td>
-                                        <td class="days" ng-click="form.repeatDays.monday = !form.repeatDays.monday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.monday, repeat_alarm_day_disabled: !form.repeatDays.monday}">M</td>
-                                        <td class="days" ng-click="form.repeatDays.tuesday = !form.repeatDays.tuesday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.tuesday, repeat_alarm_day_disabled: !form.repeatDays.tuesday}">T</td>
-                                        <td class="days" ng-click="form.repeatDays.wednesday = !form.repeatDays.wednesday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.wednesday, repeat_alarm_day_disabled: !form.repeatDays.wednesday}">W</td>
-                                        <td class="days" ng-click="form.repeatDays.thursday = !form.repeatDays.thursday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.thursday, repeat_alarm_day_disabled: !form.repeatDays.thursday}">T</td>
-                                        <td class="days" ng-click="form.repeatDays.friday = !form.repeatDays.friday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.friday, repeat_alarm_day_disabled: !form.repeatDays.friday}">F</td>
-                                        <td class="days" ng-click="form.repeatDays.saturday = !form.repeatDays.saturday" ng-class="{repeat_alarm_day_enabled: form.repeatDays.saturday, repeat_alarm_day_disabled: !form.repeatDays.saturday}">S</td>
+                                        <td class="days" ng-click="form.sunday = !form.sunday" ng-class="{repeat_alarm_day_enabled: form.sunday, repeat_alarm_day_disabled: !form.sunday}">S</td>
+                                        <td class="days" ng-click="form.monday = !form.monday" ng-class="{repeat_alarm_day_enabled: form.monday, repeat_alarm_day_disabled: !form.monday}">M</td>
+                                        <td class="days" ng-click="form.tuesday = !form.tuesday" ng-class="{repeat_alarm_day_enabled: form.tuesday, repeat_alarm_day_disabled: !form.tuesday}">T</td>
+                                        <td class="days" ng-click="form.wednesday = !form.wednesday" ng-class="{repeat_alarm_day_enabled: form.wednesday, repeat_alarm_day_disabled: !form.wednesday}">W</td>
+                                        <td class="days" ng-click="form.thursday = !form.thursday" ng-class="{repeat_alarm_day_enabled: form.thursday, repeat_alarm_day_disabled: !form.thursday}">T</td>
+                                        <td class="days" ng-click="form.friday = !form.friday" ng-class="{repeat_alarm_day_enabled: form.friday, repeat_alarm_day_disabled: !form.friday}">F</td>
+                                        <td class="days" ng-click="form.saturday = !form.saturday" ng-class="{repeat_alarm_day_enabled: form.saturday, repeat_alarm_day_disabled: !form.saturday}">S</td>
                                     </tr>
                                 </table>
                             </fieldset>
                             <fieldset class="row">
                                 <br>
                                 <section class="col col-md-12 col-xs-12">
-                                    <label class="input form-control"> <i class="icon-prepend fa fa-clock-o"></i>
-											<input type="text" name="" placeholder="Alarm name" ng-model="form.name">
-										</label>
-                                </section>
-                                <br>
-                                <section class="col col-md-12 col-xs-12">
                                     <div class="form-group">
+                                        <label class="input form-control"> <i class="icon-prepend fa fa-clock-o"></i>
+                                            <input type="text" name="name" placeholder="Alarm name" ng-model="form.name" required ng-minlength="3">
+                                            <div class="has-error note note-error" ng-show="alarmForm.$invalid">
+                                               <span class="form-error" ng-show="alarmForm.name.$error.required">This is a required field</span>
+                                               <span class="form-error" ng-show="alarmForm.name.$error.minlength">Minimum length required is 3</span>
+                                           </div>
+                                        </label>
+                                    </div>
+                                </section>
+                                <section class="col col-md-12 col-xs-12">
+                                    <div class="form-group" >
                                         <div>
                                             <div class="input-group">
+                                                <label></label>
                                                 <select name="videoDropdown" ng-model="form.video" required ng-options="option as option.name for option in videos" class="form-control">
                                                     <option value="" disabled selected>Select a Video to Play</option>
                                                 </select>
                                                 <span class="input-group-btn" data-toggle="modal" data-target="#newAlarmModal">
-                                                    <button class="btn btn-primary" style="padding: 7px 10px 7px 10px;margin-left: 5px;"> <i class="fa fa-gear"></i> </button>
+                                                    <button class="btn btn-primary" style="padding: 7px 10px 7px 10px;margin-left:3px; margin-top:18px;"> <i class="fa fa-gear"></i> </button>
                                                 </span>
+                                            </div>
+                                            <div class="has-error note note-error" ng-show="alarmForm.$invalid">
+                                                <span class="form-error" ng-show="alarmForm.videoDropdown.$invalid">This field is required </span>
                                             </div>
                                         </div>
                                     </div>
@@ -81,10 +90,10 @@
 
 							<footer>
 								<div class="form-actions-2">
-                                    <a class="btn btn-primary btn-lg">
+                                    <button class="btn btn-primary btn-lg" ng-disabled="!alarmForm.$valid" type="submit">
                                         <i class="fa fa-save"></i>
                                         Submit
-                                    </a>
+                                    </button>
                                     <a class="btn btn-danger btn-lg" ui-sref="home">
                                         <i class="fa fa-times"></i>
                                         Cancel
@@ -236,6 +245,17 @@
         </div><!-- /.modal-dialog -->
 
     </div><!-- /.modal -->
-    <div class="modal divMessageBox animated fadeIn fast" id="verify-alarm-delete"><div class="MessageBoxContainer animated fadeIn fast" id="Msg1"><div class="MessageBoxMiddle"><span class="MsgTitle">Smart Alert!</span><p class="pText">This is a confirmation box. Can be programmed for button callback</p><div class="MessageBoxButtonSection"><button id="bot1-Msg1" class="btn btn-default btn-sm botTempo"> No</button><button id="bot2-Msg1" class="btn btn-default btn-sm botTempo"> Yes</button></div></div></div></div>
+    <div class="modal divMessageBox animated fadeIn fast" id="verify-alarm-delete">
+        <div class="MessageBoxContainer animated fadeIn fast" id="Msg1">
+            <div class="MessageBoxMiddle">
+                <span class="MsgTitle">Deleting Video!</span>
+                <p class="pText">Are you sure you want to delete this video?</p>
+                <div class="MessageBoxButtonSection">
+                    <button id="bot1-Msg1" class="btn btn-default btn-sm botTempo"> No</button>
+                    <button id="bot2-Msg1" class="btn btn-default btn-sm botTempo"> Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endverbatim %}

@@ -52,6 +52,7 @@ class Alarm(models.Model):
     saturday = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
     last_edited_by = models.IntegerField(null=True)
+    flashing_lights = models.BooleanField(default=True)
 
     def clean(self):
         super(Alarm, self).clean()

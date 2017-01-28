@@ -217,8 +217,7 @@
 
         <!-- SmartChat UI : plugin -->
 
-		<script src="{% static 'js/vendor/smartadmin/smart-chat-ui/smart.chat.ui.min.js' %}"></script>
-		<script src="{% static 'js/vendor/smartadmin/smart-chat-ui/smart.chat.manager.min.js' %}"></script>
+		<script src="{% static 'js/vendor/smartadmin/notification/SmartNotification.min.js' %}"></script>
         <script src="{% static 'js/actions.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/angular.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/angular-animate.min.js' %}"></script>
@@ -250,7 +249,6 @@
 
 		$(document).ready(function() {
             {% block inlineScript %}{% endblock %}
-
 		});
 
 		</script>
