@@ -49,40 +49,44 @@ app.controller('HomeCtrl', function($scope, AlarmService, $stateParams){
 				console.log("Alarm Toggled: " + alarm.name);
             }, function(error) {
                    alarm.enabled = !alarm.enabled;
-			       alert(error);
         });
 
     };
-	$scope.toggleAlarmUI = function(alarm){
-		if (alarm.last_edited_by != threadID){
-			var i = find_alarm_in_array(alarm);
-			if (i === parseInt(i)){
-				$scope.alarms[i].enabled = !$scope.alarms[i].enabled;
-			}
-		}
-	};
-
-	$scope.addAlarmToUI = function(alarm){
-		[alarm.time, alarm.timeOfDay] = convertTime(alarm.time);
-		$scope.alarms.push(alarm);
-		notificationPopup("Alarm Created!", 'Successfully created new Alarm: ' + alarm.name, "success", "fa fa-check");
-	};
-
-	$scope.deleteAlarmFromUI = function(alarm){
-		var i = find_alarm_in_array(alarm);
-		if (i === parseInt(i)){
-			$scope.alarms.splice(i, 1);
-			notificationPopup("Deleted Alarm", "Successfully Deleted Alarm: " + alarm.name, "success", "fa fa-trash");
-		}
-	};
 
 	$scope.deleteAlarm = function(index){
 		var alarm = $scope.alarms[index];
 		AlarmService.deleteAlarm(alarm).then(function(data) {
-				$scope.deleteAlarmFromUI(alarm);
+				$scope.UI.deleteAlarmFromUI(alarm);
             }, function(error) {
 			    console.log(error);
         });
-	}
+	};
+	$scope.UI = {
+		toggleAlarmUI : function(alarm){
+			if (alarm.last_edited_by != threadID){
+				var i = find_alarm_in_array(alarm);
+				if (i === parseInt(i)){
+					$scope.alarms[i].enabled = !$scope.alarms[i].enabled;
+				}
+			}
+		},
+		addAlarmToUI : function(alarm){
+			if (alarm.last_edited_by != threadID) {
+				[alarm.time, alarm.timeOfDay] = convertTime(alarm.time);
+				$scope.alarms.push(alarm);
+				notificationPopup("Alarm Created!", 'Successfully created new Alarm: ' + alarm.name, "success", "fa fa-check");
+			}
+		},
+		deleteAlarmFromUI : function(alarm){
+			var i = find_alarm_in_array(alarm);
+			if (i === parseInt(i)) {
+				$scope.alarms.splice(i, 1);
+				notificationPopup("Deleted Alarm", "Successfully Deleted Alarm: " + alarm.name, "success", "fa fa-trash");
+			}
+		}
+	};
+
+
+
 
 });

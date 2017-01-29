@@ -12,8 +12,8 @@ class VideoSerializer(serializers.Serializer):
         field = ('id', 'name', 'url')
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.title)
-        instance.url = validated_data.get('url', instance.code)
+        instance.name = validated_data.get('name', instance.name)
+        instance.url = validated_data.get('url', instance.url)
         instance.save(update_fields=['name', 'url'])
         try:
             return instance
@@ -21,7 +21,10 @@ class VideoSerializer(serializers.Serializer):
             raise serializers.ValidationError(str(e))
 
     def create(self, validated_data):
-        return Video.objects.create(**validated_data)
+        try:
+            return Video.objects.create(**validated_data)
+        except Exception as e:
+            raise serializers.ValidationError(str(e))
 
 
 class AlarmSerializer(serializers.Serializer):

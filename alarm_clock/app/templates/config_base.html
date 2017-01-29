@@ -152,7 +152,8 @@
 
 		<!-- #PLUGINS -->
 		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+        <script src="{% static 'js/vendor/underscore-min.js' %}"></script>
 		<script>
 			if (!window.jQuery) {
 				document.write("<script src=\"{% static 'js/vendor/smartadmin/libs/jquery-2.1.1.min.js' %}\"><\/script>");
@@ -213,7 +214,7 @@
             {% block websocket_settings %}{% endblock %}
         </script>
 		<!-- MAIN APP JS FILE -->
-		<script src="{% static 'js/app.min.js' %}"></script>
+
 
         <!-- SmartChat UI : plugin -->
 
@@ -235,6 +236,7 @@
         <script src="{% static 'js/vendor/angularjs/ui-bootstrap-tpls-2.4.0.min.js' %}"></script>
         <script src="{% static 'js/vendor/angularjs/ng-websocket.js' %}"></script>
         <script src="{% static 'js/utils.js' %}"></script>
+        <script src="{% static 'js/app.min.js' %}"></script>
         <script src="{% static 'js/app.js' %}"></script>
         <script src="{% static 'js/services.js' %}"></script>
         <script src="{% static 'js/controllers/homeController.js' %}"></script>

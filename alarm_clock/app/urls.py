@@ -5,6 +5,7 @@ from . import views
 partial_patterns = [
     url(r'^home.html$', PartialGroupView.as_view(template_name='partials/home.html'), name='home'),
     url(r'^new-alarm.html$', PartialGroupView.as_view(template_name='partials/new-alarm.html'), name='new_alarm'),
+    url(r'^edit-videos.html$', PartialGroupView.as_view(template_name='partials/modals/edit-videos.html'), name='edit_alarms'),
 ]
 
 urlpatterns = [
