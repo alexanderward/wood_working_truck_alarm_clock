@@ -27,7 +27,7 @@ app.controller('NewAlarmCtrl', function($scope, VideoService, AlarmService, $log
 
     VideoService.getVideos()
         .then(function(data) {
-                $scope.videos = data;
+                $scope.baseDropDownVideos = data;
             }, function(error) {
                    console.log(error)
         });

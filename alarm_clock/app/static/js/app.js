@@ -28,7 +28,7 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 function addAlarm(data) {
                     var scope = angular.element(document.getElementById("alarm-widget")).scope();
                     scope.$apply(function () {
-                    scope.UI.addAlarmToUI(data);
+                        scope.UI.addAlarmToUI(data);
                     });
                 }
                 addAlarm(data);                
@@ -36,7 +36,7 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 function deleteAlarm(data) {
                     var scope = angular.element(document.getElementById("alarm-widget")).scope();
                     scope.$apply(function () {
-                    scope.UI.deleteAlarmFromUI(data);
+                        scope.UI.deleteAlarmFromUI(data);
                     });
                 }
                 deleteAlarm(data);
@@ -44,7 +44,7 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 function toggleAlarmUI(data) {
                     var scope = angular.element(document.getElementById("alarm-widget")).scope();
                     scope.$apply(function () {
-                    scope.UI.toggleAlarmUI(data);
+                        scope.UI.toggleAlarmUI(data);
                     });
                 }
                 toggleAlarmUI(data);

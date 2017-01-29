@@ -1,5 +1,24 @@
 
 app.controller('EditVideoCtrl', function($scope, VideoService){
+    $scope.safeApply = function(fn) {
+        var phase = this.$root.$$phase;
+        if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
+
+    var updateBaseViewVideoDropDown = function(controllerElementID) {
+        var scope = angular.element(document.getElementById(controllerElementID)).scope();
+        $scope.safeApply(function () {
+            scope.baseDropDownVideos = $scope.dropDownVideos;
+            scope.form.video = null;
+        });
+    };
+
     var nullUpdateFormObject = function () {
         $scope.updateForm = {
             id: null,
@@ -66,6 +85,7 @@ app.controller('EditVideoCtrl', function($scope, VideoService){
                 notificationPopup("Video Updated!", "Successfully updated video: " + data.name, 'success', "fa fa-check");
                 setVideoDropDownValues(data, function(){
                     // resetUpdateForm();
+                    updateBaseViewVideoDropDown("newAlarm");
                  });
             }, function(error) {
                    console.log(error);
@@ -74,8 +94,10 @@ app.controller('EditVideoCtrl', function($scope, VideoService){
         }else if (mode == 'create'){
             VideoService.createVideo(video).then(function(data) {
                 notificationPopup("Video Created!", "Successfully created video: " + data.name, 'success', "fa fa-check");
-                setVideoDropDownValues(data);
-                resetCreateForm();
+                setVideoDropDownValues(data, function(){
+                    resetCreateForm();
+                    updateBaseViewVideoDropDown("newAlarm");
+                 });
             }, function(error) {
                    console.log(error);
                     if (error[0].includes("column name is not unique")){
@@ -88,8 +110,10 @@ app.controller('EditVideoCtrl', function($scope, VideoService){
     $scope.delete = function(video){
         VideoService.deleteVideo(video).then(function(data) {
                 notificationPopup("Video Deleted!", "Successfully deleted video: " + data.name, 'success', "fa fa-trash");
-                setVideoDropDownValues();
-                resetUpdateForm();
+                setVideoDropDownValues(data, function(){
+                    resetUpdateForm();
+                    updateBaseViewVideoDropDown("newAlarm");
+                 });
             }, function(error) {
                    console.log(error);
                    notificationPopup("Error deleting Video.", error, 'error', "fa fa-exclamation-circle");
