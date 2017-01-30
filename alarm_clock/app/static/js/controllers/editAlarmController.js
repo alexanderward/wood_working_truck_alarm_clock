@@ -1,5 +1,6 @@
 app.controller('EditAlarmCtrl', function($scope, VideoService, AlarmService, $log, $stateParams, $state){
     // Configurations
+    $scope.title = "Edit Alarm";
     $('#action-Btn').html('<a class="btn btn-primary" href="#!/"><i class="fa fa-home"></i> Home</a>');
     if ($stateParams.alarm === null){
         $state.go('home');

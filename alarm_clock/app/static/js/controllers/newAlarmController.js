@@ -1,5 +1,6 @@
 app.controller('NewAlarmCtrl', function($scope, VideoService, AlarmService, $log, $state){
     // Configurations
+    $scope.title = "Create Alarm";
     $('#action-Btn').html('<a class="btn btn-primary" href="#!/"><i class="fa fa-home"></i> Home</a>');
 
     var convertTimeToString = function(time_){
