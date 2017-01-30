@@ -1,6 +1,5 @@
 
-app.controller('HomeCtrl', function($scope, AlarmService, $stateParams){
-	console.log('Stateparams: ', $stateParams);
+app.controller('HomeCtrl', function($scope, AlarmService, $stateParams, $state){
 	if ($stateParams.notification){
 		notificationPopup($stateParams.notification.title, $stateParams.notification.message, $stateParams.notification.status, $stateParams.notification.icon);		
 	}
@@ -35,8 +34,8 @@ app.controller('HomeCtrl', function($scope, AlarmService, $stateParams){
                    console.log(error)
         });
 
-	$scope.editAlarm = function(event, team){
-     	console.log(event.currentTarget, team);
+	$scope.editAlarm = function(event, alarm){
+		$state.go('editAlarm', {alarm: alarm});
     };
 
 	$scope.toggleAlarm = function(event, alarm){

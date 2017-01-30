@@ -1,9 +1,10 @@
 app.factory('AlarmService', function ($http, $q) {
+        var base_url = '/api/alarms/';
         return {
             getAlarms: function() {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
-                return $http.get('/api/alarms/')
+                return $http.get(base_url)
                     .then(function(response) {
                         if (typeof response.data === 'object') {
                             return response.data;
@@ -23,7 +24,7 @@ app.factory('AlarmService', function ($http, $q) {
                 console.log('ThreadID: '+ threadID);
                 alarm.last_edited_by = threadID;
                 console.log(alarm);
-                return $http.put('/api/alarms/'+alarm.id+'/', alarm)
+                return $http.put(base_url+alarm.id+'/', alarm)
                     .then(function(response) {
                         if (typeof response.data === 'object') {
                             return response.data;
@@ -41,7 +42,25 @@ app.factory('AlarmService', function ($http, $q) {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
                 alarm.last_edited_by = threadID;
-                return $http.post('/api/alarms/', alarm)
+                return $http.post(base_url, alarm)
+                    .then(function(response) {
+                        if (typeof response.data === 'object') {
+                            return response.data;
+                        } else {
+                            // invalid response
+                            return $q.reject(response.data);
+                        }
+
+                    }, function(response) {
+                        // something went wrong
+                        return $q.reject(response.data);
+                    });
+            },
+            updateAlarm: function(alarm) {
+                // the $http API is based on the deferred/promise APIs exposed by the $q service
+                // so it returns a promise for us by default
+                alarm.last_edited_by = threadID;
+                return $http.put(base_url+alarm.id+'/', alarm)
                     .then(function(response) {
                         if (typeof response.data === 'object') {
                             return response.data;
@@ -59,7 +78,7 @@ app.factory('AlarmService', function ($http, $q) {
                 // the $http API is based on the deferred/promise APIs exposed by the $q service
                 // so it returns a promise for us by default
                 alarm.last_edited_by = threadID;
-                return $http.delete('/api/alarms/'+alarm.id+'/')
+                return $http.delete(base_url+alarm.id+'/')
                     .then(function(response) {
                         if (typeof response.data === 'object') {
                             return response.data;

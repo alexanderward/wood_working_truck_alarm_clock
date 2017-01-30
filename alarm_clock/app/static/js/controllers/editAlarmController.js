@@ -1,28 +1,20 @@
-app.controller('NewAlarmCtrl', function($scope, VideoService, AlarmService, $log, $state){
+app.controller('EditAlarmCtrl', function($scope, VideoService, AlarmService, $log, $stateParams, $state){
     // Configurations
     $('#action-Btn').html('<a class="btn btn-primary" href="#!/"><i class="fa fa-home"></i> Home</a>');
+    if ($stateParams.alarm === null){
+        $state.go('home');
+        return
+    }
+
+
+    $scope.form = $stateParams.alarm;
+    $scope.hstep = 1;
+    $scope.mstep = 1;
+    $scope.ismeridian = true;
+    $scope.alarmTime = convertStringTo24HourDate($scope.form.time, $scope.form.timeOfDay);
 
     var convertTimeToString = function(time_){
         return time_.getHours() +":"+ time_.getMinutes() + ":" + time_.getSeconds();
-    };
-
-    $scope.hstep = 1;
-    $scope.mstep = 1;
-    $scope.ismeridian = true;    
-    $scope.alarmTime = new Date();
-    $scope.form = {
-        name: null,
-        time: convertTimeToString($scope.alarmTime),
-        video: null,
-        flashingLights: true,
-        monday:false,
-        tuesday:false,
-        wednesday:false,
-        thursday:false,
-        friday:false,
-        saturday:false,
-        sunday:false,
-        enabled:true
     };
 
     VideoService.getVideos()
@@ -35,26 +27,26 @@ app.controller('NewAlarmCtrl', function($scope, VideoService, AlarmService, $log
     
 
     $scope.submit = function() {
-        AlarmService.createAlarm($scope.form)
+        AlarmService.updateAlarm($scope.form)
         .then(function(data) {            
-            console.log('Successfully created new Alarm: ' + data.name);
+            console.log('Successfully updated Alarm: ' + data.name);
             $state.go('home', {notification: {
-                                title: 'Alarm Created!',
-                                message: 'Successfully created new Alarm: ' + data.name,
+                                title: 'Alarm Updated!',
+                                message: 'Successfully updated Alarm: ' + data.name,
                                 color: '#',
                                 status: 'success',
                                 icon: "fa fa-check"
                               }
             });
-        }, function(error) {
+        }, function(error) {            
             if (typeof error == 'object'){
                 error = JSON.stringify(error);
 
             }else if (error[0].includes("column name is not unique")){
                 error = "Duplicate Alarm name.  Please choose another."
             }
-            notificationPopup("Error creating Alarm: " + $scope.form.name, error, 'error', "fa fa-exclamation-circle");
-
+            notificationPopup("Error updating Alarm: " + $scope.form.name, error, 'error', "fa fa-exclamation-circle");
+            console.log(error)
         });
     };
 

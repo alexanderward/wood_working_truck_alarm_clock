@@ -45,6 +45,20 @@ function convertTo24Hour(time, timeOfDay){
     return time;
 }
 
+var convertStringTo24HourDate = function(time, timeOfDay){
+    var tmpDate = new Date();
+    var year = tmpDate.getYear();
+    var month = tmpDate.getMonth();
+    var day = tmpDate.getDate();
+    console.log(time);
+    var hour, minute;
+    [hour, minute] = time.split(':');
+    if (timeOfDay === "PM"){
+        hour = hour + 12;
+    }
+    return new Date(year, month, day, hour, minute);
+};
+
 var notificationPopup = function(title, message, status, icon){
     var color;
     if (status == 'success'){

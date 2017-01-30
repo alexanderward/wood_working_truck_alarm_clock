@@ -15,6 +15,14 @@ var app = angular.module('app', ['ngWebsocket', 'ngRoute', 'ui.router', 'ui.boot
                 url:'/newAlarm',
                 templateUrl: '/partials/new-alarm.html',
                 controller: 'NewAlarmCtrl'
+            })
+            .state('editAlarm', {
+                url:'/editAlarm',
+                templateUrl: '/partials/new-alarm.html',
+                controller: 'EditAlarmCtrl',
+                params: {
+                    alarm: null
+                }
             });
     }])
     .run(function ($websocket) {
