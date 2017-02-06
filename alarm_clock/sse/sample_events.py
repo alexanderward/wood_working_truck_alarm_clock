@@ -8,7 +8,7 @@ if __name__ == '__main__':
     broker = Broker()
     counter = 1
     # message = Commands.start_alarm('Test Alarm')
-    message = Commands.start_alarm('Test')
+    message = Commands.start_alarm('Daniel2')
     # message = Commands.start_alarm('Peaches')
     broker.publish(source='sample_events.py', channel=PUBSUB_SSE_ALARM_TRUCK_CHANNEL, message=message)
     # broker.publish(source='sample_events.py', channel=PUBSUB_SSE_ALARM_TRUCK_CONFIGURATION_CHANNEL, message={'event': 'test', 'data': 'keke'})

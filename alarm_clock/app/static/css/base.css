@@ -26,15 +26,33 @@ body{
 }
 
 #clock{
-    display:table-cell;
-    width:100%;
-    height:100%;
-    text-align:center;
-    vertical-align:middle;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+    border-radius: 3px;
+    justify-content: center;
+    align-items: center;
+    color:red;
 }
+
+/*#clock{*/
+    /*!*display:table-cell;*!*/
+    /*width:100%;*/
+    /*height:100%;*/
+    /*text-align:center;*/
+    /*vertical-align:middle;*/
+     /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+/*}*/
 #clocktext{
-    font-size:24pt;
-    font-kerning:none;
+    /*font-size:24pt;*/
+    /*font-kerning:none;*/
     color:#ccc;
 }
 

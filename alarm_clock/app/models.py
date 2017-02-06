@@ -34,9 +34,10 @@ class Video(models.Model):
     def __str__(self):
         return self.name
 
-    def clean(self):
-        super(Video, self).clean()
-        clean_youtube_link(self)
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.url = clean_youtube_link(self).url
+        super(Video, self).save()
 
 
 class Alarm(models.Model):

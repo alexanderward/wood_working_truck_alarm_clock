@@ -6,6 +6,7 @@ from pubsub.broker import Broker
 from rest_framework import status, viewsets
 from models import Alarm, Video
 from rest_framework.exceptions import ValidationError
+from rest_framework.status import HTTP_201_CREATED
 from serializers import AlarmSerializer, VideoSerializer
 from sse.commands import Commands
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
@@ -32,7 +33,7 @@ class GenericViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = serializer.create(serializer.data)
             response_serializer = self.get_serializer(instance)
-            return JSONResponse(response_serializer.data)
+            return JSONResponse(response_serializer.data, status=HTTP_201_CREATED)
         else:
             raise ValidationError(serializer.errors)
 
